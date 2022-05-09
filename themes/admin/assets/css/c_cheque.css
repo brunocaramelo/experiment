@@ -1,0 +1,116 @@
+@charset "UTF-8";
+/* CSS Document */
+
+  body {
+        margin: 0;
+        padding: 0;
+        background-color: #FAFAFA;
+        font: 7.5pt "Verdana";
+	  	text-transform: uppercase;
+    }
+    * {
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+    }
+    .page {
+        width: 21cm;
+        min-height: 29.7cm;
+        padding: 2cm;
+        margin: 1cm auto;
+        border: 1px #D3D3D3 solid;
+        border-radius: 5px;
+        background: white;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+    .subpage {
+        padding: 1cm;
+        border: 5px red solid;
+        height: 256mm;
+        outline: 2cm #FFEAEA solid;
+    }
+    
+    @page {
+        size: A4;
+        margin: 0;
+    }
+    @media print {
+        .page {
+            margin: 0;
+            border: initial;
+            border-radius: initial;
+            width: initial;
+            min-height: initial;
+            box-shadow: initial;
+            background: initial;
+            page-break-after: always;
+        }
+    }
+table, td {
+  border-collapse: collapse;
+}
+.tbody {
+	border: 1px solid #000 !important;
+	padding: 3px;
+}
+#tb {
+		width: 100%;
+        margin: 0;
+        padding: 0;
+		border: 1px solid #000;
+	
+}#tb th{
+		border: 1px solid #000;
+		font-weight: normal;
+	
+}
+#tb td {
+	text-align: center;
+	border: 1px solid #000;
+	padding: 2px;
+	margin: 0px;
+}
+#tb .td_desc, #tb .td_receita, #tb td div {
+	border-bottom: 1px solid #f2f2f2;
+	padding: 1px 0px 1px 0px;
+}
+
+#tb .td_desc{
+	text-align: left;
+	border-bottom: #000;
+	padding: 0px 0px 0px 5px;
+}
+#tb .td_receita,  #tb .td_despesa {
+	border-bottom: #000;	
+	text-align: right;
+	padding: 0px 5px 0px 0px;
+}
+
+
+.lf, .lf2, .lf_ompag, .lf_pagadora {
+	display: inline-block;
+			}
+.rows {
+	display: inline-block;
+	border-left: 1px solid #f30;
+	height: 40px;
+	margin: 0px !important;
+}
+.lf2 {
+	border-left: 1px solid #000;
+	padding-left: 5px;
+	text-align: center !important;
+}
+.lf_ompag {
+	width: 20%;
+	padding-left: 5px;
+	text-align: center !important;
+}
+.lf_pagadora {
+	width: 78%;
+	border-left: 1px solid #000;
+	padding-left: 5px;
+	text-align: center !important;
+}
+
+
+
