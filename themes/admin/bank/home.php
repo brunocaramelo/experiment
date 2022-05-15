@@ -41,7 +41,7 @@
                     <tbody>
                     <?php foreach ($banks as $bank): ?>
                         <tr>
-                            <td><a href="<?= url("/banco-e-coeficiente/alterar/{$bank->cod}"); ?>" class="" title="Consultar"><?=$bank->bank?></a></td>
+                            <td><a href="<?= url("/banco-e-coeficiente/alterar/{$bank->cod}"); ?>" title="Consultar"><?=$bank->bank?></a></td>
                             <td><?php if($bank->status=="1"):?>Ativo<?php else:?>Inativo<?php endif?></td>
                         </tr>
                     <?php endforeach; ?>

@@ -44,6 +44,7 @@
                             <th>Status</th>
                             <th>Acessos</th>
                             <th>Usuários Bloqueados</th>
+                            <th>Boleto</th>
                             <th>Usuários</th>
                             <th>Alterar</th>
                             <th>Excluir</th>
@@ -58,6 +59,15 @@
                                 <td><b><?php if ($account->status == "1") : ?><a href="#" class="" title="Mudar Status" data-post="<?= url("/clientes/status/{$account->id}"); ?>" data-action="delete" data-confirm="Deseja Desativar Essa Conta?" data-account="<?= $account->id; ?>"><span style="color:green">Ativa</span></a><?php endif ?> <?php if ($account->status == "3") : ?><a href="#" class="" title="Mudar Status" data-post="<?= url("/clientes/status/{$account->id}"); ?>" data-action="delete" data-confirm="Deseja Ativar Essa Conta?" data-account="<?= $account->id; ?>"><span style="color:red">Desativada<span></a><?php endif ?></b></td>
                                 <td><b><a href="<?= url("/clientes/acessos/{$account->id}"); ?>" class="" title="Acessos"><?php foreach($account->countAccess() as $count_access): echo $count_access->count_access; endforeach;?></a></b></td>
                                 <td><b><a href="<?= url("/clientes/bloqueado/{$account->id}"); ?>" class="" title="Usuários bloqueados"><?php echo $account->userBloquedCount();?></a></b></td>
+                                <td>
+                                    <a href="<?= url("/boletos/cadastrar/cliente/{$account->id}") ?>">
+                                    <!-- 
+                                        Quando não houver boletos vinculados ao usuário,
+                                        exibir "Incluir boleto", quando houver, exibir "Ver boletos"
+                                    -->
+                                        Incluir boleto
+                                    </a>
+                                </td>
                                 <td><b><a href="<?= url("/clientes/usuario/{$account->id}"); ?>" class="" title="Usuários"><i class="fas fa-users"></i></a></b></td>
                                 <td><b><a href="<?= url("/clientes/alterar/{$account->id}"); ?>" class="" title="Alterar"><i class="fas fa-edit"></i></a></b></td>
                                 <td>

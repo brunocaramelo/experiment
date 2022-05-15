@@ -3,7 +3,7 @@ $router->get("/usuario", "Users:home","users.home");
 $router->get("/clientes", "Users:account","users.account");
 $router->get("/clientes/cadastrar", "Users:accountAdd","users.accountAdd");
 $router->post("/clientes/cadastrar", "Users:accountCreat","users.accountCreat");
-$router->post("/clientes/excluir/{account}", "Users:accountDelete","users.accountDelete");
+$router->post("{account}", "Users:accountDelete","users.accountDelete");
 $router->get("/clientes/alterar/{account}", "Users:accountUpdate","users.accountUpdate");
 $router->post("/clientes/alterar/{account}", "Users:accountUpdated","users.accountUpdated");
 $router->get("/clientes/acessos/{account}", "Users:accountAccess","users.accountAccess");

@@ -17,6 +17,8 @@ require_once("routes/AuxRoute.php");
 require_once("routes/FilterRoute.php");
 require_once("routes/ClientRouter.php");
 require_once("routes/BankRoute.php");
+require_once("routes/TicketRoute.php");
+
 /**
  * ERRORS
  */
