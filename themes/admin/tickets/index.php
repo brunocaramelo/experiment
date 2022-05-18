@@ -24,10 +24,13 @@
     <div class="card card-solid">
       <div class="card-body pb-0">
       <div class="row">
+            <?php if (user()->level_id == 1): ?> 
                <div class="col-md-4">
                     <a href="<?= url("/boletos/cadastrar/cliente/{$accountId}"); ?>" class="btn btn-success">Novo Boleto</a>
-                </div> 
+                </div>
+            <?php endif; ?>
                 <div class="col-md-5">
+            
                 </div>
             </div><br>
             <?php
@@ -35,37 +38,42 @@
                 <table id="table-tickets" class="display" >
                 <thead>
                     <tr>
-                        <th>#</th>
                         <th>Nome</th>
                         <th>Código de barras</th>
                         <th>Vencimento</th>
                         <th>Status</th>
-                        <th>Ações</th>
+                        <th>Cliente</th>
+                        <?php if (user()->level_id == 1): ?> 
+                            <th>Ações</th>
+                        <?php endif; ?>
                     </tr>
                     </thead>
                     <tbody>
                     <?php foreach ($tickets as $ticket): ?>
                         <tr>
-                            <td><?= $ticket->id ?></td>
                             <td><?= $ticket->name ?></td>
                             <td><?= $ticket->bar_code ?></td>
                             <td><?= date_fmt_br2($ticket->due_date) ?></td>
                             <td><?= $ticket->status ?></td>
-                            <td>
-                                <a href="<?= url("/boletos/alterar/{$ticket->id}/cliente/{$ticket->account_id}") ?>" 
-                                    class="btn btn-primary">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <a href="#" 
-                                    class="btn btn-danger" 
-                                    title="Excluir" 
-                                    data-post="<?= url("/boletos/remover/{$ticket->id}/cliente/{$ticket->account_id}"); ?>" 
-                                    data-action="delete" 
-                                    data-confirm="ATENÇÃO: Tem certeza que deseja excluir esse boleto? Essa ação não poderá ser desfeita!" 
-                                    data-account="<?= $ticket->id; ?>">
-                                        <i class="fas fa-trash"></i>
-                                </a>
-                            </td>
+                            <td><?= $ticket->description ?></td>
+                            <?php if (user()->level_id == 1): ?> 
+                                <td>
+                                    <a href="<?= url("/boletos/alterar/{$ticket->id}/cliente/{$ticket->account_id}") ?>" 
+                                        class="btn btn-primary">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="#" 
+                                        class="btn btn-danger" 
+                                        title="Excluir" 
+                                        data-post="<?= url("/boletos/remover/{$ticket->id}/cliente/{$ticket->account_id}"); ?>" 
+                                        data-action="delete" 
+                                        data-confirm="ATENÇÃO: Tem certeza que deseja excluir esse boleto? Essa ação não poderá ser desfeita!" 
+                                        data-account="<?= $ticket->id; ?>">
+                                            <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            <?php endif; ?>
+
                         </tr>
                     <?php endforeach; ?>
                     </tbody>
@@ -75,7 +83,9 @@
                         <td></td>
                         <td></td>
                         <td></td>
+                        <?php if (user()->level_id == 1): ?> 
                         <td></td>
+                        <?php endif; ?>
                     </tfoot>
                 </table><br>
             <?php endif;?>

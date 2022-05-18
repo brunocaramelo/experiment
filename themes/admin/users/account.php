@@ -65,7 +65,7 @@
                                         Quando não houver boletos vinculados ao usuário,
                                         exibir "Incluir boleto", quando houver, exibir "Ver boletos"
                                     -->
-                                        Incluir boleto
+                                        <small>Incluir boleto</small>
                                     </a>
                                 </td>
                                 <td><b><a href="<?= url("/clientes/usuario/{$account->id}"); ?>" class="" title="Usuários"><i class="fas fa-users"></i></a></b></td>

@@ -1,6 +1,8 @@
 <?php
 
 $router->get("/boletos/cliente/{accountId}", "Ticket:index","ticket.index");
+$router->get("/boletos-a-pagar", "Ticket:clientTicketsUnpaid", "ticket.clientTicketsUnpaid");
+$router->get("/boletos-pagos", "Ticket:clientTicketPaid", "ticket.clientTicketPaid");
 $router->get("/boletos/cadastrar/cliente/{accountId}", "Ticket:create","ticket.create");
 $router->post("/boletos/cadastrar/cliente/{accountId}", "Ticket:store","ticket.store");
 $router->get("/boletos/alterar/{id}/cliente/{accountId}", "Ticket:edit","ticket.edit");

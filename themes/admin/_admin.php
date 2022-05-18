@@ -299,6 +299,37 @@ $companyLogo = ($logo ? image($logo, 100, 100) : "");
                                 <p>Atendimentos</p>
                             </a>
                         </li>
+
+                        <?php if (user()->level_id == 2) : ?>
+                            <li <?php if ($menu == "clientTicketsPaid" || $menu == "clientTicketsUnpaid") : ?>class="nav-item menu-open" <?php else : ?>class="nav-item" <?php endif ?>>
+                                <a href="#" <?php if ($menu == "clientTicketsPaid" || $menu == "clientTicketsUnpaid") : ?>class="nav-link active" <?php else : ?>class="nav-link" <?php endif ?>>
+                                    <i class="nav-icon fas fa-receipt"></i>
+                                    <p>
+                                        Boletos
+                                        <i class="right fas fa-angle-down"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <?php if (user()->client == 1) : ?>
+                                        <li class="nav-item">
+                                            <a href="<?= $router->route("ticket.clientTicketsUnpaid"); ?>" <?php if ($submenu == "tickets-unpaid") : ?>class="nav-link active" <?php else : ?>class="nav-link" <?php endif ?>>
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Boletos a pagar</p>
+                                            </a>
+                                        </li>
+
+                                        <li class="nav-item">
+                                            <a href="<?= $router->route("ticket.clientTicketPaid"); ?>" <?php if ($submenu == "tickets-paid") : ?>class="nav-link active" <?php else : ?>class="nav-link" <?php endif ?>>
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Boletos pagos</p>
+                                            </a>
+                                        </li>
+                                        
+                                    <?php endif; ?>
+                                </ul>
+                            </li>
+                        <?php endif; ?>
+
                         <?php if (user()->level_id == 1) : ?>
                             <li <?php if ($menu == "resumo") : ?>class="nav-item menu-open" <?php else : ?>class="nav-item" <?php endif ?>>
                                 <a href="<?= $router->route("filter.resumo"); ?>" <?php if ($submenu == "resumo") : ?>class="nav-link active" <?php else : ?>class="nav-link" <?php endif ?>>
@@ -491,6 +522,9 @@ $companyLogo = ($logo ? image($logo, 100, 100) : "");
     <script src="<?= url("/shared/scripts/jquery.min.js"); ?>"></script>
 
     <script src="<?= url("/shared/scripts/jquery.form.js"); ?>"></script>
+
+    <!-- Pnotify -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pnotify/attempt-to-update-packagist/pnotify.js" integrity="sha512-vVCwjYtarAac2AMUNPP0cqRITQ00L8kXCRzUfLInqdz3iPUa/3kuBiXjhcEG4VaBLsBzgcChpq68qzUl1LAZ4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <!-- jQuery UI 1.11.4 -->
     <script src="<?= url("/shared/scripts/jquery-ui.js"); ?>"></script>
@@ -997,7 +1031,7 @@ $companyLogo = ($logo ? image($logo, 100, 100) : "");
 
         // Cristiano's code... 
         var table = $('#table-tickets').DataTable({
-            "ordering": true,
+            "ordering": false,
             "paging": true,
             "info": true,
             "lengthChange": true,

@@ -27,9 +27,9 @@ class Ticket extends Admin
     /**
      * @param array|null $data
      */
-    public function index(?array $data)
+    public function clientTicketPaid(?array $data)
     {
-        $tickets = (new TicketModel())->find()->fetch(true); // model
+        $tickets = (new TicketModel())->getPaidTicketsOfClientOrderedByDueDate(); // model
 
         $head = $this->seo->render(
             CONF_SITE_NAME . " | Boletos",
@@ -40,11 +40,30 @@ class Ticket extends Admin
         );
 
         echo $this->view->render("tickets/index", [
-            "menu" => "tickets",
-            "submenu" => "tickets",
+            "menu" => "tickets-paid",
+            "submenu" => "tickets-paid",
             "head" => $head,
             "tickets" => $tickets,
-            "accountId" => $data['accountId']
+        ]);
+    }
+
+    public function clientTicketsUnpaid(?array $data)
+    {
+        $tickets = (new TicketModel())->getUnpaidTicketsOfClientOrderedByDueDate(); // model
+
+        $head = $this->seo->render(
+            CONF_SITE_NAME . " | Boletos",
+            CONF_SITE_DESC,
+            url("/"),
+            url("/assets/images/image.png"),
+            false
+        );
+
+        echo $this->view->render("tickets/index", [
+            "menu" => "tickets-unpaid",
+            "submenu" => "tickets-unpaid",
+            "head" => $head,
+            "tickets" => $tickets
         ]);
     }
 
@@ -54,6 +73,10 @@ class Ticket extends Admin
      */
     public function create(?array $data)
     {
+        if (user()->level_id != 1) {
+            return url('/ops/404');
+        }
+
         $head = $this->seo->render(
             CONF_SITE_NAME . " | Cadastrar boleto",
             CONF_SITE_DESC,
@@ -76,6 +99,10 @@ class Ticket extends Admin
      */
     public function store(?array $data)
     {
+        if (user()->level_id != 1) {
+            return url('/ops/404');
+        }
+
         //create
         if (!empty($data["action"]) && $data["action"] == "create") {
             if (!empty($data['csrf'])) {
@@ -154,6 +181,10 @@ class Ticket extends Admin
 
     public function update(array $data)
     {
+        if (user()->level_id != 1) {
+            return;
+        }
+
         if (!empty($data["action"]) && $data["action"] == "edit") {
             if (!empty($data['csrf'])) {
                 if ($_REQUEST && !csrf_verify($_REQUEST)) {
@@ -210,6 +241,10 @@ class Ticket extends Admin
 
     public function destroy(array $data)
     {
+        if (user()->level_id != 1) {
+            return;
+        }
+        
         $ticket = (new TicketModel())->findById($data['id']);
         $ticket->destroy();
 

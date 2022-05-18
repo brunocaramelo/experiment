@@ -40,5 +40,4 @@ class Clients extends Admin
         "client_blocked" => $client_blocked
     ]);
     }
-
 }
