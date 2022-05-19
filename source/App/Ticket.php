@@ -24,6 +24,27 @@ class Ticket extends Admin
         parent::__construct($router);
     }
 
+    public function getAllTickets(?array $data)
+    {
+        $tickets = (new TicketModel())->getTicketsOrderedByDueDate(); // model
+
+        $head = $this->seo->render(
+            CONF_SITE_NAME . " | Todos os voletos",
+            CONF_SITE_DESC,
+            url("/"),
+            url("/assets/images/image.png"),
+            false
+        );
+
+        echo $this->view->render("tickets/index", [
+            "menu" => "tickets-paid",
+            "submenu" => "tickets-paid",
+            "head" => $head,
+            "tickets" => $tickets,
+            "accountId" => $data['accountId'],
+        ]);
+    }
+
     /**
      * @param array|null $data
      */
@@ -32,7 +53,7 @@ class Ticket extends Admin
         $tickets = (new TicketModel())->getPaidTicketsOfClientOrderedByDueDate(); // model
 
         $head = $this->seo->render(
-            CONF_SITE_NAME . " | Boletos",
+            CONF_SITE_NAME . " | Boletos pagos",
             CONF_SITE_DESC,
             url("/"),
             url("/assets/images/image.png"),
@@ -50,9 +71,10 @@ class Ticket extends Admin
     public function clientTicketsUnpaid(?array $data)
     {
         $tickets = (new TicketModel())->getUnpaidTicketsOfClientOrderedByDueDate(); // model
+        $firstTicketToPay = $tickets[0] ?? [];
 
         $head = $this->seo->render(
-            CONF_SITE_NAME . " | Boletos",
+            CONF_SITE_NAME . " | Boletos a pagar",
             CONF_SITE_DESC,
             url("/"),
             url("/assets/images/image.png"),
@@ -63,10 +85,61 @@ class Ticket extends Admin
             "menu" => "tickets-unpaid",
             "submenu" => "tickets-unpaid",
             "head" => $head,
-            "tickets" => $tickets
+            "tickets" => $tickets,
+            "ticketToPay" => $firstTicketToPay,
         ]);
     }
 
+    public function markTicketAsPaid(?array $data)
+    {
+        if (user()->level_id != 2) {
+            return;
+        }
+
+        if (!empty($data["action"]) && $data["action"] == "edit") {
+            if (!empty($data['csrf'])) {
+                if ($_REQUEST && !csrf_verify($_REQUEST)) {
+                    $json["message"] = "Erro ao enviar o formulário, atualize a página";
+                    echo json_encode($json);
+                    return;
+                }
+            }
+
+            $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+
+            $ticket = new TicketModel();
+            $ticket->status = 'Boleto pago';
+
+            if (!$ticket->save()) {
+                $json["message"] = $ticket->fail()->getMessage();
+                echo json_encode($json);
+                return;
+            }
+
+            $this->message->info("Boleto editado com sucesso...")->flash();
+            $json["redirect"] = url("/boletos/cliente/{$data['account_id']}");
+            echo json_encode($json);
+            return;
+        }
+
+        $head = $this->seo->render(
+            CONF_SITE_NAME . " | Editar boleto",
+            CONF_SITE_DESC,
+            url("/"),
+            url("/assets/images/image.png"),
+            false
+        );
+
+        echo $this->view->render("tickets/edit", [
+            "menu" => "tickets",
+            "submenu" => "tickets",
+            "head" => $head,
+            "ticket" => (new TicketModel())->findById($data['ticketId']),
+            "accountId" => $data['accountId'],
+        ]);
+    }
+
+    
     /**
      * @param array|null $data
      * @throws \Exception

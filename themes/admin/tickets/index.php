@@ -1,4 +1,4 @@
-<?php $v->layout("_admin"); ?>
+<?php $v->layout("_admin_custom"); ?>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
