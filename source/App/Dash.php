@@ -6,6 +6,7 @@ use Source\Models\Attendance;
 use Source\Models\Filter;
 use Source\Models\User;
 use Source\Models\Log;
+use Source\Models\Ticket as TicketModel;
 
 /**
  * Description of Dash
@@ -37,6 +38,8 @@ class Dash extends Admin
    */
   public function home(?array $data): void
   {
+    $tickets = (new TicketModel())->getUnpaidTicketsOfClientOrderedByDueDate(); // model
+    $firstTicketToPay = $tickets[0] ?? null;
 
     if ($this->user->client == 1) {
       $users = (new User())->find("status!=2 and client=1 and account_id=:id and admin_account=0", "id={$this->user->account_id}")->count();
@@ -76,7 +79,8 @@ class Dash extends Admin
       "filter_pause" => $filter_pause,
       "attandance_team" => $attandance_team,
       "attandance_personal" => $attandance_personal,
-      "scheduling" => ""
+      "scheduling" => "",
+      "ticketToPay" => $firstTicketToPay,
     ]);
   }
 

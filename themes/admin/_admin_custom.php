@@ -436,7 +436,8 @@ $companyLogo = ($logo ? image($logo, 100, 100) : "");
                 <!-- /.sidebar-menu -->
                 <!-- Notification popup -->
                 <?php 
-                    if (user()->level_id == 2) {
+                    $ticketToPay = $ticketToPay ?? null;
+                    if ($ticketToPay && user()->level_id == 2) {
                         include_once __DIR__."/./tickets/components/notification.php";
                     }
                 ?>

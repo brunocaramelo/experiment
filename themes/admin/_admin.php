@@ -432,6 +432,12 @@ $companyLogo = ($logo ? image($logo, 100, 100) : "");
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->
+                <?php
+                $ticketToPay = $ticketToPay ?? null;
+                if ($ticketToPay && user()->level_id == 2) {
+                    include_once __DIR__."/./tickets/components/notification.php";
+                }
+            ?>
             </div>
             <!-- /.sidebar -->
         </aside>
@@ -599,7 +605,7 @@ $companyLogo = ($logo ? image($logo, 100, 100) : "");
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
     <script src="https://cdn.datatables.net/buttons/1.6.5/js/buttons.html5.min.js"></script>
-
+    <script src="<?= theme("/assets/js/notification.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
 
     <script type="text/javascript">
         var path = '<?php echo url(); ?>'

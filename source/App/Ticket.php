@@ -29,7 +29,7 @@ class Ticket extends Admin
         $tickets = (new TicketModel())->getTicketsOrderedByDueDate(); // model
 
         $head = $this->seo->render(
-            CONF_SITE_NAME . " | Todos os voletos",
+            CONF_SITE_NAME . " | Todos os boletos",
             CONF_SITE_DESC,
             url("/"),
             url("/assets/images/image.png"),
@@ -51,6 +51,7 @@ class Ticket extends Admin
     public function clientTicketPaid(?array $data)
     {
         $tickets = (new TicketModel())->getPaidTicketsOfClientOrderedByDueDate(); // model
+        $firstTicketToPay = (new TicketModel())->getFirstTicketToPayByUserAccountId() ?? null;
 
         $head = $this->seo->render(
             CONF_SITE_NAME . " | Boletos pagos",
@@ -60,18 +61,19 @@ class Ticket extends Admin
             false
         );
 
-        echo $this->view->render("tickets/index", [
+        echo $this->view->render("tickets/tickets-paid", [
             "menu" => "tickets-paid",
             "submenu" => "tickets-paid",
             "head" => $head,
             "tickets" => $tickets,
+            "ticketToPay" => $firstTicketToPay,
         ]);
     }
 
     public function clientTicketsUnpaid(?array $data)
     {
         $tickets = (new TicketModel())->getUnpaidTicketsOfClientOrderedByDueDate(); // model
-        $firstTicketToPay = $tickets[0] ?? [];
+        $firstTicketToPay = (new TicketModel())->getFirstTicketToPayByUserAccountId() ?? null;
 
         $head = $this->seo->render(
             CONF_SITE_NAME . " | Boletos a pagar",
@@ -81,7 +83,7 @@ class Ticket extends Admin
             false
         );
 
-        echo $this->view->render("tickets/index", [
+        echo $this->view->render("tickets/tickets-unpaid", [
             "menu" => "tickets-unpaid",
             "submenu" => "tickets-unpaid",
             "head" => $head,
@@ -90,13 +92,9 @@ class Ticket extends Admin
         ]);
     }
 
-    public function markTicketAsPaid(?array $data)
+    public function markTicketAsPaid(array $data)
     {
-        if (user()->level_id != 2) {
-            return;
-        }
-
-        if (!empty($data["action"]) && $data["action"] == "edit") {
+        if (!empty($data["action"]) && $data["action"] == "markTicketAsPaid") {
             if (!empty($data['csrf'])) {
                 if ($_REQUEST && !csrf_verify($_REQUEST)) {
                     $json["message"] = "Erro ao enviar o formulário, atualize a página";
@@ -107,8 +105,11 @@ class Ticket extends Admin
 
             $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
 
-            $ticket = new TicketModel();
+            $data = (new TicketModel())->getFirstTicketToPayByUserAccountId() ?? null;
+
+            $ticket = (new TicketModel());
             $ticket->status = 'Boleto pago';
+            $ticket->id = $data['id'];
 
             if (!$ticket->save()) {
                 $json["message"] = $ticket->fail()->getMessage();
@@ -116,8 +117,8 @@ class Ticket extends Admin
                 return;
             }
 
-            $this->message->info("Boleto editado com sucesso...")->flash();
-            $json["redirect"] = url("/boletos/cliente/{$data['account_id']}");
+            $this->message->info("Boleto marcado como pago!")->flash();
+            $json["redirect"] = url("/boletos-a-pagar");
             echo json_encode($json);
             return;
         }
@@ -254,8 +255,30 @@ class Ticket extends Admin
 
     public function update(array $data)
     {
-        if (user()->level_id != 1) {
-            return;
+        if (!empty($data["action"]) && $data["action"] == "markTicketAsPaid") {
+            if (!empty($data['csrf'])) {
+                if ($_REQUEST && !csrf_verify($_REQUEST)) {
+                    $json["message"] = "Erro ao enviar o formulário, atualize a página";
+                    echo json_encode($json);
+                    return;
+                }
+            }
+
+            return $this->markTicketAsPaid($data);
+        }
+
+        if (!empty($data["action"]) && $data["action"] == "markTicketAsPaidIndex") {
+            var_dump($data);
+            die;
+            if (!empty($data['csrf'])) {
+                if ($_REQUEST && !csrf_verify($_REQUEST)) {
+                    $json["message"] = "Erro ao enviar o formulário, atualize a página";
+                    echo json_encode($json);
+                    return;
+                }
+            }
+
+            return $this->markTicketAsPaid($data);
         }
 
         if (!empty($data["action"]) && $data["action"] == "edit") {
@@ -291,7 +314,6 @@ class Ticket extends Admin
 
             $this->message->info("Boleto editado com sucesso...")->flash();
             $json["redirect"] = url("/boletos/cliente/{$data['account_id']}");
-            echo json_encode($json);
             return;
         }
 

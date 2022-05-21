@@ -7,7 +7,7 @@
                 
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0"><i class="nav-icon fas fa-receipt"></i> Todos os boletos</h1>
+                        <h1 class="m-0"><i class="nav-icon fas fa-receipt"></i> Boletos pagos</h1>
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -43,7 +43,6 @@
                         <th>Vencimento</th>
                         <th>Status</th>
                         <th>Cliente</th>
-                        <th>Ações</th>  
                     </tr>
                     </thead>
                     <tbody>
@@ -87,7 +86,6 @@
                     </tbody>
                     <tfoot>
                         <td>Total: <?= count($tickets); ?></td>
-                        <td></td>
                         <td></td>
                         <td></td>
                         <td></td>
