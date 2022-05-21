@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-
+<?php use Carbon\Carbon; ?>
 <html lang="en">
 
 <head>
@@ -433,10 +433,13 @@ $companyLogo = ($logo ? image($logo, 100, 100) : "");
                 </nav>
                 <!-- /.sidebar-menu -->
                 <?php
-                $ticketToPay = $ticketToPay ?? null;
-                if ($ticketToPay && user()->level_id == 2) {
-                    include_once __DIR__."/./tickets/components/notification.php";
-                }
+                    $ticketToPay = $ticketToPay ?? null;
+                    if ($ticketToPay) {
+                        $daysRemaining = Carbon::now()->diff($ticketToPay->due_date)->d;
+                        if ($ticketToPay && user()->level_id == 2 && $daysRemaining <= 3) {
+                            include_once __DIR__."/./tickets/components/notification.php";
+                        }
+                    }
             ?>
             </div>
             <!-- /.sidebar -->

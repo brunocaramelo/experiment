@@ -267,20 +267,6 @@ class Ticket extends Admin
             return $this->markTicketAsPaid($data);
         }
 
-        if (!empty($data["action"]) && $data["action"] == "markTicketAsPaidIndex") {
-            var_dump($data);
-            die;
-            if (!empty($data['csrf'])) {
-                if ($_REQUEST && !csrf_verify($_REQUEST)) {
-                    $json["message"] = "Erro ao enviar o formulário, atualize a página";
-                    echo json_encode($json);
-                    return;
-                }
-            }
-
-            return $this->markTicketAsPaid($data);
-        }
-
         if (!empty($data["action"]) && $data["action"] == "edit") {
             if (!empty($data['csrf'])) {
                 if ($_REQUEST && !csrf_verify($_REQUEST)) {
@@ -314,6 +300,7 @@ class Ticket extends Admin
 
             $this->message->info("Boleto editado com sucesso...")->flash();
             $json["redirect"] = url("/boletos/cliente/{$data['account_id']}");
+            echo json_encode($json);
             return;
         }
 

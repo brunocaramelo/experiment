@@ -1,4 +1,5 @@
 <link rel="stylesheet" href="<?= theme("/assets/css/notification.css", CONF_VIEW_THEME_ADMIN); ?>" />
+
 <div class="ticket-notification px-3 py-3 mb-3">
     <div class="notification-body">
         <strong class="notification-text">
