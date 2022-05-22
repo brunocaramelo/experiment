@@ -300,6 +300,13 @@ function url_back(): string
     return ($_SERVER['HTTP_REFERER'] ?? url());
 }
 
+function UrlAtual(): string
+{
+    $dominio= $_SERVER['HTTP_HOST'];
+    $url = "http://" . $dominio. $_SERVER['REQUEST_URI'];
+    return $url;
+}
+
 /**
  * 
  * @param type $path

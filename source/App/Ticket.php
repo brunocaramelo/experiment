@@ -273,6 +273,29 @@ class Ticket extends Admin
         ]);
     }
 
+    /**
+     * @param array|null $data
+     */
+    public function editRedirectToIndex(array $data)
+    {
+        $ticket = (new TicketModel())->findById($data['id']);
+        $head = $this->seo->render(
+            CONF_SITE_NAME . " | Editar boleto",
+            CONF_SITE_DESC,
+            url("/"),
+            url("/assets/images/image.png"),
+            false
+        );
+
+        echo $this->view->render("tickets/edit-redirect-to-index", [
+            "menu" => "tickets",
+            "submenu" => "tickets",
+            "head" => $head,
+            'ticket' => $ticket,
+            "accountId" => $data['accountId'],
+        ]);
+    }
+
     public function update(array $data)
     {
         if (!empty($data["action"]) && $data["action"] == "markTicketAsPaid") {
@@ -319,7 +342,75 @@ class Ticket extends Admin
             }
 
             $this->message->info("Boleto editado com sucesso...")->flash();
-            $json["redirect"] = url_back();
+            $json["redirect"] = url("/boletos/cliente/{$data['account_id']}");
+            echo json_encode($json);
+            return;
+        }
+
+        $head = $this->seo->render(
+            CONF_SITE_NAME . " | Editar boleto",
+            CONF_SITE_DESC,
+            url("/"),
+            url("/assets/images/image.png"),
+            false
+        );
+
+        echo $this->view->render("tickets/edit", [
+            "menu" => "tickets",
+            "submenu" => "tickets",
+            "head" => $head,
+            "ticket" => (new TicketModel())->findById($data['ticketId']),
+            "accountId" => $data['accountId'],
+        ]);
+    }
+
+    public function updateRedirectToIndex(array $data)
+    {
+        if (!empty($data["action"]) && $data["action"] == "markTicketAsPaid") {
+            if (!empty($data['csrf'])) {
+                if ($_REQUEST && !csrf_verify($_REQUEST)) {
+                    $json["message"] = "Erro ao enviar o formulário, atualize a página";
+                    echo json_encode($json);
+                    return;
+                }
+            }
+
+            return $this->markTicketAsPaid($data);
+        }
+
+        if (!empty($data["action"]) && $data["action"] == "edit") {
+            if (!empty($data['csrf'])) {
+                if ($_REQUEST && !csrf_verify($_REQUEST)) {
+                    $json["message"] = "Erro ao enviar o formulário, atualize a página";
+                    echo json_encode($json);
+                    return;
+                }
+            }
+
+            if (!$data["name"] && !$data["bar_code"] && !$data["due_date"]) {
+                $json["message"] = "Erro ao enviar o formulário, não é possível editar um boleto com todos os campos em branco, por favor, tente novamente!";
+                echo json_encode($json);
+                return;
+            }
+
+            $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+
+            $ticket = new TicketModel();
+            $ticket->name = $data["name"] ?? null;
+            $ticket->bar_code = $data['bar_code'] ?? null;
+            $ticket->due_date = $data['due_date'] ?? null;
+            $ticket->status = $data['status'];
+            $ticket->id = $data['ticketId'] ?? null;
+            $ticket->account_id = $data['account_id'] ?? null;
+
+            if (!$ticket->save()) {
+                $json["message"] = $ticket->fail()->getMessage();
+                echo json_encode($json);
+                return;
+            }
+
+            $this->message->info("Boleto editado com sucesso...")->flash();
+            $json["redirect"] = url("/boletos");
             echo json_encode($json);
             return;
         }
@@ -351,7 +442,23 @@ class Ticket extends Admin
         $ticket->destroy();
 
         $this->message->info("Boleto excluído com sucesso...")->flash();
-        $json["redirect"] = url_back();
+        $json["redirect"] = url("/boletos/cliente/{$ticket->account_id}");
+
+        echo json_encode($json);
+        return;
+    }
+
+    public function destroyRedirectToIndex(array $data)
+    {
+        if (user()->level_id != 1) {
+            return;
+        }
+        
+        $ticket = (new TicketModel())->findById($data['id']);
+        $ticket->destroy();
+
+        $this->message->info("Boleto excluído com sucesso...")->flash();
+        $json["redirect"] = url("/boletos");
 
         echo json_encode($json);
         return;

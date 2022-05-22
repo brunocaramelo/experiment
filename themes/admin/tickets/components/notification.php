@@ -11,7 +11,10 @@
         <div class="container">
             <div class="row">
                 <div class="col-7">
-                    <form action="<?= url("/boletos/alterar/{$ticketToPay->id}/cliente/{$ticketToPay->account_id}") ?>" method="post">
+                    <?php
+                        $redirectTo = $_SERVER['REQUEST_URI'] == '/boletos' ? '/boletos' : "/boletos/cliente/{$ticketToPay->account_id}";
+                    ?>
+                    <form action="<?= url("/boletos/alterar/{$ticketToPay->id}/cliente/{$ticketToPay->account_id}?redirectTo={$redirectTo}") ?>" method="post">
                         <?= csrf_input(); ?>
                         <input type="hidden" name="ticketId" value="<?= $ticketToPay->id ?>" />
                         <input type="hidden" name="account_id" value="<?= $ticketToPay->account_id ?>" />
