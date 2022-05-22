@@ -9,7 +9,7 @@
                 <div class="col-sm-6">
                     <h1 class="m-0"><i class="nav-icon fas fa-receipt"></i> Editar Boleto</h1>
                     <a class="btn btn-primary mt-3" href="<?= url("/boletos/cliente/{$accountId}") ?>">
-                        <i class="fas fa-eye"></i> Ver Boletos
+                        <i class="fas fa-eye"></i> Boletos deste cliente
                     </a>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
