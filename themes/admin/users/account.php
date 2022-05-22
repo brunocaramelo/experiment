@@ -23,9 +23,10 @@
     <div class="card card-solid">
         <div class="card-body pb-0">
             <div class="row">
-                <div class="col-md-1">
+                <div class="col-md-6">
                     <?php if (user()->level_id == 1) : ?>
                         <a href="<?= $router->route("users.accountAdd"); ?>" class="btn btn-success">Novo Cliente</a>
+                        <a href="<?= $router->route("ticket.index"); ?>" class="btn btn-primary">Todos os boletos</a>
                     <?php endif; ?>
                 </div>
                 <div class="col-md-2">

@@ -24,7 +24,12 @@
     <div class="card card-solid">
       <div class="card-body pb-0">
       <div class="row">
-            <?php if (user()->level_id == 1): ?> 
+            
+            <?php 
+                $accountId = $accountId ?? null;
+
+                if (user()->level_id == 1 && $accountId): 
+            ?> 
                <div class="col-md-4">
                     <a href="<?= url("/boletos/cadastrar/cliente/{$accountId}"); ?>" class="btn btn-success">Novo Boleto</a>
                 </div>

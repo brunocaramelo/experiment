@@ -24,9 +24,29 @@ class Ticket extends Admin
         parent::__construct($router);
     }
 
-    public function getAllTickets(?array $data)
+    public function index(?array $data)
     {
         $tickets = (new TicketModel())->getTicketsOrderedByDueDate(); // model
+
+        $head = $this->seo->render(
+            CONF_SITE_NAME . " | Todos os boletos",
+            CONF_SITE_DESC,
+            url("/"),
+            url("/assets/images/image.png"),
+            false
+        );
+
+        echo $this->view->render("tickets/index", [
+            "menu" => "tickets-paid",
+            "submenu" => "tickets-paid",
+            "head" => $head,
+            "tickets" => $tickets,
+        ]);
+    }
+
+    public function getAllTicketsOfClient(?array $data)
+    {
+        $tickets = (new TicketModel())->getAllTicketsOfClientOrderedByDueDate($data['accountId']); // model
 
         $head = $this->seo->render(
             CONF_SITE_NAME . " | Todos os boletos",
@@ -299,7 +319,7 @@ class Ticket extends Admin
             }
 
             $this->message->info("Boleto editado com sucesso...")->flash();
-            $json["redirect"] = url("/boletos/cliente/{$data['account_id']}");
+            $json["redirect"] = url_back();
             echo json_encode($json);
             return;
         }
@@ -331,7 +351,7 @@ class Ticket extends Admin
         $ticket->destroy();
 
         $this->message->info("Boleto excluído com sucesso...")->flash();
-        $json["redirect"] = url("/boletos/cliente/{$ticket->account_id}");
+        $json["redirect"] = url_back();
 
         echo json_encode($json);
         return;

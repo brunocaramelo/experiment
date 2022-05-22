@@ -43,6 +43,22 @@ class Ticket extends DataLayer
             ->fetchAll();
     }
 
+    public function getAllTicketsOfClientOrderedByDueDate($accountId)
+    {
+        return Connect::getInstance()
+            ->query(
+                "SELECT t.*, a.description 
+                    FROM tickets as t
+                    INNER JOIN accounts as a
+                        ON t.account_id = a.id
+                        WHERE t.account_id={$accountId}
+                            ORDER BY t.due_date"
+
+            )
+            ->fetchAll();
+    }
+
+
     public function getFirstTicketToPayByUserAccountId()
     {
         $userAccountId = user()->account_id;

@@ -15,7 +15,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="<?= $router->route("dash.dash"); ?>">Home</a></li>
-                        <li class="breadcrumb-item"><a href="<?= $router->route("ticket.index"); ?>">Boletos</a></li>
+                        <li class="breadcrumb-item"><a href="<?= $router->route("ticket.getAllTicketsOfClient"); ?>">Boletos</a></li>
                         <li class="breadcrumb-item active">Editar Boleto</li>
                     </ol>
                 </div><!-- /.col -->
