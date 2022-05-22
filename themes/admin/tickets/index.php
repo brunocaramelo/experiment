@@ -61,14 +61,18 @@
                             <td><?= $ticket->description ?></td>
                             <?php if (user()->level_id == 1): ?> 
                                 <td>
-                                    <a href="<?= url("/boletos/alterar/{$ticket->id}/cliente/{$ticket->account_id}/editRedirectToIndex") ?>" 
+                                    <?php 
+                                        $editRedirectToIndex = $_SERVER['REQUEST_URI'] == '/boletos' ? '/editRedirectToIndex' : '';
+                                        $destroyRedirectToIndex = $_SERVER['REQUEST_URI'] == '/boletos' ? '/destroyRedirectToIndex' : '';
+                                    ?>
+                                    <a href="<?= url("/boletos/alterar/{$ticket->id}/cliente/{$ticket->account_id}{$editRedirectToIndex}") ?>" 
                                         class="btn btn-primary">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     <a href="#" 
                                         class="btn btn-danger" 
                                         title="Excluir" 
-                                        data-post="<?= url("/boletos/remover/{$ticket->id}/cliente/{$ticket->account_id}/destroyRedirectToIndex"); ?>" 
+                                        data-post="<?= url("/boletos/remover/{$ticket->id}/cliente/{$ticket->account_id}{$destroyRedirectToIndex}"); ?>" 
                                         data-action="delete" 
                                         data-confirm="ATENÇÃO: Tem certeza que deseja excluir esse boleto? Essa ação não poderá ser desfeita!" 
                                         data-account="<?= $ticket->id; ?>">
