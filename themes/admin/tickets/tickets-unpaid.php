@@ -54,7 +54,10 @@
                             <td><?= date_fmt_br2($ticket->due_date) ?></td>
                             <td><?= $ticket->status ?></td>
                             <td><?= $ticket->description ?></td>
-                            <?php if (user()->level_id == 1): ?> 
+                            <?php
+                                $ticketToPay = $ticketToPay ?? null; 
+                                if (user()->level_id == 1 && $ticketToPay): 
+                            ?> 
                                 <td>
                                     <a href="<?= url("/boletos/alterar/{$ticket->id}/cliente/{$ticket->account_id}") ?>" 
                                         class="btn btn-primary">
@@ -77,9 +80,15 @@
                                 if (user()->level_id == 2 && $isUrlBoletoAPagar && $ticketToPay->status == 'Boleto não pago'): 
                             ?>
                                 <td>
+                                <form action="<?= url("/boletos/alterar/{$ticketToPay->id}/cliente/{$ticketToPay->account_id}") ?>" method="post">
+                                    <?= csrf_input(); ?>
+                                    <input type="hidden" name="ticketId" value="<?= $ticketToPay->id ?>" />
+                                    <input type="hidden" name="account_id" value="<?= $ticketToPay->account_id ?>" />
+                                    <input type="hidden" name="action" value="markTicketAsPaid" />
                                     <button type="submit" class="btn btn-success w-100">
-                                        <i class="nav-icon fas fa-check"></i> Boleto pago
+                                        <i class="nav-icon fas fa-check"></i> Marcar como pago
                                     </button>
+                                </form>
                                 </td>
                             <?php endif; ?>
                         </tr>
