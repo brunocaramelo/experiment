@@ -21,7 +21,7 @@ define("DATA_LAYER_CONFIG", [
     "driver" => "mysql",
     "host" => "127.0.0.1",
     "port" => "3306",
-    "dbname" => "sistemcred_dev",
+    "dbname" => "sistemacred_dev",
     "username" => "root",
     "passwd" => "",
     "options" => [
@@ -36,8 +36,8 @@ define("DATA_LAYER_CONFIG", [
 /**
  * PROJECT URLs
  */
-define("CONF_URL_BASE", "http://dev.sistemcred.com");
-define("CONF_URL", "http://dev.sistemcred.com");
+define("CONF_URL_BASE", "http://dev.sistemacred.com");
+define("CONF_URL", "http://dev.sistemacred.com");
 
 /**
  * SITE

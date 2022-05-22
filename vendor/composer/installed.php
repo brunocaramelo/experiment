@@ -5,7 +5,7 @@
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => 'b2e4f9d75fbe838cb54c5de24f46909629b1cd96',
+        'reference' => 'b0ff5d32d45f78d7041b23870dbeb645e0bb7e53',
         'name' => 'source/sistema_red',
         'dev' => true,
     ),
@@ -178,7 +178,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => 'b2e4f9d75fbe838cb54c5de24f46909629b1cd96',
+            'reference' => 'b0ff5d32d45f78d7041b23870dbeb645e0bb7e53',
             'dev_requirement' => false,
         ),
         'symfony/deprecation-contracts' => array(

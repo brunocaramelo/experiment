@@ -436,7 +436,7 @@ $companyLogo = ($logo ? image($logo, 100, 100) : "");
                     $ticketToPay = $ticketToPay ?? null;
                     if ($ticketToPay) {
                         $daysRemaining = Carbon::now()->diff($ticketToPay->due_date)->d;
-                        if ($ticketToPay && user()->level_id == 2 && $daysRemaining <= 3) {
+                        if ($ticketToPay && user()->level_id == 2 && $daysRemaining <= 2) {
                             include_once __DIR__."/./tickets/components/notification.php";
                         }
                     }
