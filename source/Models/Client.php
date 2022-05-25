@@ -18,6 +18,7 @@ class Client extends DataLayer
     public function __construct()
     {
         $base_client = User::UserLog()->base_client;
+
         parent::__construct("{$base_client}.client", ["NOME"]);
         //parent::__construct("client", ["NOME"]);
     }
@@ -568,6 +569,7 @@ class Client extends DataLayer
     public function returnClientContract($organ)
     {
         $base_client = User::UserLog()->base_client;
+
         $connect = Connect::getInstance();
         if ($organ == 1) {
 			$query = "select BANCO as 'BANCO_EMPRES',PRAZO,CAST(REPLACE(REPLACE(VALOR,'.',''),',','.') AS decimal(10,2)) as VALOR from {$base_client}.client_exercito where CPF='" . $this->CPF . "' group by BANCO,CAST(REPLACE(REPLACE(VALOR,'.',''),',','.') AS decimal(10,2))";

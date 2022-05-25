@@ -1,0 +1,28 @@
+.ticket-notification {
+    background-color: #ffeb3b;
+    width: 30%;
+    height: auto;
+    border-radius: 5px;
+    box-shadow: 1px 1px 10px #aaa;
+    position: fixed;
+    right: 25px;
+    bottom: -25px;
+    z-index: 9999;
+}
+
+.notification-header {
+    width: 100%;
+    height: auto;
+    background-color: none;
+}
+
+.notification-text {
+    font-size: 15px;
+    color: #4f4f00;
+}
+
+.notification-body {
+    width: 100%;
+    height: auto;
+    background-color: none;
+}

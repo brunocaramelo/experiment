@@ -118,6 +118,15 @@
             </div-->
             <br>
         </div><!-- /.container-fluid -->
+        <?php if(isset(returnScheduling()->date_return)): ?>
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-4"></div>
+            <div class="col-md-4">
+                <?php include __DIR__."/./components/notification_dash.php"; ?>
+            </div>
+        </div>
+    <?php endif; ?>
     </section>
     <!-- /.content -->
 </div>

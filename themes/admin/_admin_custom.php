@@ -490,44 +490,7 @@ $companyLogo = ($logo ? image($logo, 100, 100) : "");
             </div>
         </div>
     </div>
-<?php if(isset(returnScheduling()->date_return)): ?>
-    <div class="modal" id="modalScheduling" tabindex="-1" data-backdrop="static" role="dialog">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Existe um atendimento agendado para <?= date_fmt2(returnScheduling()->date_return) ?></h5>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="container">
-                                <table class="table" >
-                                    <thead>
-                                        <tr>
-                                            <th>Cliente</th>
-                                            <th>Matrícula</th>
-                                            <th>CPF</th>
-                                            <th>Atendimento</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td><?= returnScheduling()->clientDesc()->NOME ?></td>
-                                            <td><?= returnScheduling()->clientDesc()->MATRICULA ?></td>
-                                            <td><?= returnScheduling()->clientDesc()->CPF ?></td>
-                                            <td><a href="<?= url("/cliente/consulta/" . returnScheduling()->clientDesc()->id); ?>"><i class="fas fa-phone"></i></a></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-    <?php endif; ?>
+    
  <!-- jQuery -->
  <script src="<?= url("/shared/scripts/jquery.min.js"); ?>"></script>
 
