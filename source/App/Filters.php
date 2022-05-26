@@ -2302,7 +2302,7 @@ class Filters extends Admin
 
     public function scheduling(?array $data): void
     {
-        $schedulings = (new Scheduling())->find()->fetch(true);
+        $schedulings = (new Scheduling())->find("account_id=:id and status!=2", "id={$this->user->account_id}")->fetch(true);
 
         $head = $this->seo->render(
             CONF_SITE_NAME . " | Agendamentos",
