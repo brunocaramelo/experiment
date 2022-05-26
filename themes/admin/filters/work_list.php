@@ -71,7 +71,6 @@
                                     <td><b><?= date_fmt_br2($filter->until_attendence_of) ?></b></td>
                                     <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<i class="fas fa-phone"></i></td>
                                 </tr>
-                            
                         <?php endforeach; ?>
                     </tbody>
                     <tfoot>

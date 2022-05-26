@@ -40,7 +40,6 @@
                     </nav>
                     <div class="tab-content p-3" id="nav-tabContent">
                         <div class="row">
-                            <div class="col-md-1"></div>
                             <?php if ($filter->status_filter == "AGUARDANDO" || $filter->status_filter == "PAUSADO") : ?>
                                 <div class="col-md-2"><button class="btn btn-lg btn-outline-success" id="btn_editar"><i class="fas fa-edit"> Salvar Filtro</i></button></div>
                                 <?php if ($filter->waiting == 0) : ?>
@@ -56,9 +55,44 @@
                             <!--div class="col-md-2"><a href="#" class="btn btn-lg btn-outline-primary"> Duplicar filtro</i></a></div-->
                             <div class="col-md-2"><a href="" class="btn btn-lg btn-outline-danger" data-post="<?= url("/filtro/excluir/{$filter->cod}"); ?>" data-action="delete" data-confirm="ATENÇÃO: Tem certeza que deseja excluir esse filtro e todos os dados relacionados a ele? Essa ação não pode ser desfeita!" data-client_cod="<?= $filter->cod; ?>"><i class="fas fa-trash"> Excluir filtro</i></a></div>
                             <div class="col-md-2"><a href="" class="btn btn-lg btn-outline-dark" data-post="<?= url("/filtro/mudar/{$filter->cod}"); ?>" data-action="finish" data-confirm="ATENÇÃO: Deseja finalizar esse filtro?" data-client_cod="<?= $filter->cod; ?>"><i class="fas fa-check"> Finalizar filtro</i></a></div>
-                            <div class="col-md-1"></div>
+                            <div class="col-md-2">
+                            <a id="download-csv" href="#" class="btn btn-lg btn-success">
+                                <i class="fas fa-file-csv"></i> Baixar CSV
+                            </a>
+                            </div>
                         </div><br>
                         <div class="tab-pane fade show active" id="data" role="tabpanel" aria-labelledby="data-tab">
+                        <table id="table2csv" class="table">
+                            <thead>
+                                <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">CPF</th>
+                                <th scope="col">Matrícula</th>
+                                <th scope="col">Telefone 1</th>
+                                <th scope="col">Telefone 2</th>
+                                <th scope="col">Telefone 3</th>
+                                <th scope="col">Telefone 4</th>
+                                <th scope="col">Telefone 5</th>
+                                <th scope="col">Telefone 6</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($clientesAtendidos as $clienteAtendido): ?>
+                                    <tr>
+                                        <td><?= $clienteAtendido->id ?></td>
+                                        <td><?= $clienteAtendido->CPF ?></td>
+                                        <td><?= $clienteAtendido->MATRICULA ?></td>
+                                        <td><?= $clienteAtendido->telefone_1 ?></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                                    
+                            </tbody>
+                            </table>
                             <div class="row">
                                 <div class="col-md-4">
                                     <label>Órgão:</label>

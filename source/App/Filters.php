@@ -879,6 +879,7 @@ class Filters extends Admin
             false
         );
 
+        $clientesAtendidos = (new ClientUpdate())->getClientesAtendidosByCod($data['cod']);
         echo $this->view->render("filters/edit", [
             "menu" => "filter",
             "submenu" => "filterHome",
@@ -913,7 +914,8 @@ class Filters extends Admin
             "filter_legal_regimes" => $filter_legal_regime,
             "filter_organ_siapes" => $filter_organ_siapes,
             "attendanceCount" => $attendanceCount,
-            "attendances" => $attendances
+            "attendances" => $attendances,
+            "clientesAtendidos" => $clientesAtendidos,
         ]);
     }
 
