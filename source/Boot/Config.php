@@ -2,28 +2,13 @@
 /**
  * DATABASE
  */
-// define("DATA_LAYER_CONFIG", [
-//     "driver" => "mysql",
-//     "host" => "92.249.45.92",
-//     "port" => "3306",
-//     "dbname" => "sistem80_cred_hml",
-//     "username" => "sistem80",
-//     "passwd" => "consult1810",
-//     "options" => [
-//         PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
-//         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-//         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
-//         PDO::ATTR_CASE => PDO::CASE_NATURAL
-//     ]
-// ]);
-
 define("DATA_LAYER_CONFIG", [
     "driver" => "mysql",
-    "host" => "127.0.0.1",
+    "host" => "92.249.45.92",
     "port" => "3306",
-    "dbname" => "sistemacred_dev",
-    "username" => "root",
-    "passwd" => "",
+    "dbname" => "sistem80_cred_hml",
+    "username" => "sistem80",
+    "passwd" => "consult1810",
     "options" => [
         PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -32,12 +17,27 @@ define("DATA_LAYER_CONFIG", [
     ]
 ]);
 
+/*define("DATA_LAYER_CONFIG", [
+    "driver" => "mysql",
+    "host" => "localhost",
+    "port" => "3306",
+    "dbname" => "sistem80_cred",
+    "username" => "root",
+    "passwd" => "",
+    "options" => [
+        PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
+        PDO::ATTR_CASE => PDO::CASE_NATURAL
+    ]
+]);*/
+
 
 /**
  * PROJECT URLs
  */
-define("CONF_URL_BASE", "http://dev.sistemacred.com");
-define("CONF_URL", "http://dev.sistemacred.com");
+define("CONF_URL_BASE", "http://localhost/sistema_cred");
+define("CONF_URL", "http://localhost/sistema_cred");
 
 /**
  * SITE
