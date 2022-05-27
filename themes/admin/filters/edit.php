@@ -1,4 +1,5 @@
 <?php $v->layout("_admin"); ?>
+
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -36,6 +37,7 @@
                             <a class="nav-item nav-link active" id="data-tab" data-toggle="tab" href="#data" role="tab" aria-controls="data" aria-selected="true">Dados do Filtro</a>
                             <a class="nav-item nav-link" id="report-tab" data-toggle="tab" href="#report" role="tab" aria-controls="report" aria-selected="true">Registros</a>
                             <a class="nav-item nav-link" id="attendance-tab" data-toggle="tab" href="#attendance" role="tab" aria-controls="attendance" aria-selected="false">Clientes Atendidos</a>
+                            <a class="nav-item nav-link" id="csv-tab" data-toggle="tab" href="#csv" role="tab" aria-controls="csv" aria-selected="false">Arquivo CSV</a>
                         </div>
                     </nav>
                     <div class="tab-content p-3" id="nav-tabContent">
@@ -56,43 +58,9 @@
                             <div class="col-md-2"><a href="" class="btn btn-lg btn-outline-danger" data-post="<?= url("/filtro/excluir/{$filter->cod}"); ?>" data-action="delete" data-confirm="ATENÇÃO: Tem certeza que deseja excluir esse filtro e todos os dados relacionados a ele? Essa ação não pode ser desfeita!" data-client_cod="<?= $filter->cod; ?>"><i class="fas fa-trash"> Excluir filtro</i></a></div>
                             <div class="col-md-2"><a href="" class="btn btn-lg btn-outline-dark" data-post="<?= url("/filtro/mudar/{$filter->cod}"); ?>" data-action="finish" data-confirm="ATENÇÃO: Deseja finalizar esse filtro?" data-client_cod="<?= $filter->cod; ?>"><i class="fas fa-check"> Finalizar filtro</i></a></div>
                             <div class="col-md-2">
-                            <a id="download-csv" href="#" class="btn btn-lg btn-success">
-                                <i class="fas fa-file-csv"></i> Baixar CSV
-                            </a>
                             </div>
                         </div><br>
                         <div class="tab-pane fade show active" id="data" role="tabpanel" aria-labelledby="data-tab">
-                        <table id="table2csv" class="table">
-                            <thead>
-                                <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">CPF</th>
-                                <th scope="col">Matrícula</th>
-                                <th scope="col">Telefone 1</th>
-                                <th scope="col">Telefone 2</th>
-                                <th scope="col">Telefone 3</th>
-                                <th scope="col">Telefone 4</th>
-                                <th scope="col">Telefone 5</th>
-                                <th scope="col">Telefone 6</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($clientesAtendidos as $clienteAtendido): ?>
-                                    <tr>
-                                        <td><?= $clienteAtendido->id ?></td>
-                                        <td><?= $clienteAtendido->CPF ?></td>
-                                        <td><?= $clienteAtendido->MATRICULA ?></td>
-                                        <td><?= $clienteAtendido->telefone_1 ?></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                <?php endforeach; ?>
-                                    
-                            </tbody>
-                            </table>
                             <div class="row">
                                 <div class="col-md-4">
                                     <label>Órgão:</label>
@@ -714,6 +682,41 @@
                                 </table><br>
                             <?php endif; ?>
                         </div>
+
+                        <div class="tab-pane fade" id="csv" role="tabpanel" aria-labelledby="csv-tab">
+                        <table id="table2csv" class="table">
+                            <thead>
+                                <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">CPF</th>
+                                <th scope="col">Matrícula</th>
+                                <th scope="col">Telefone 1</th>
+                                <th scope="col">Telefone 2</th>
+                                <th scope="col">Telefone 3</th>
+                                <th scope="col">Telefone 4</th>
+                                <th scope="col">Telefone 5</th>
+                                <th scope="col">Telefone 6</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($clientesAtendidos as $clienteAtendido): ?>
+
+                                    <tr>
+                                        <td><?= $clienteAtendido->id ?></td>
+                                        <td><?= $clienteAtendido->CPF ?></td>
+                                        <td><?= $clienteAtendido->MATRICULA ?></td>
+                                        <td><?= $clienteAtendido->telefone_01 ?></td>
+                                        <td><?= $clienteAtendido->telefone_02 ?></td>
+                                        <td><?= $clienteAtendido->telefone_03 ?></td>
+                                        <td><?= $clienteAtendido->telefone_04 ?></td>
+                                        <td><?= $clienteAtendido->telefone_05 ?></td>
+                                        <td><?= $clienteAtendido->telefone_06 ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                                    
+                            </tbody>
+                            </table>
+                        </div>
                     </div>
                 </form>
             </div><!-- /.card -->
@@ -762,4 +765,23 @@
 </div>
 <?php $v->start("scripts"); ?>
 <script src="<?= url("/shared/scripts/filter_edit.js"); ?>"></script>
+<script>
+    $(document).ready(function() {
+            $('#table2csv').DataTable({
+                "language": {
+                    "search": "Procurar:",
+                    "lengthMenu": "_MENU_ Resultados por página",
+                    "zeroRecords": "Nenhum Registro Encontrado",
+                    "infoEmpty": "Nenhum Registro Encontrado",
+                },
+                dom: 'Bfrtip',
+                buttons: [
+                'excel',
+                ],
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4]
+                },
+            });
+        });
+</script>
 <?php $v->end(); ?>
