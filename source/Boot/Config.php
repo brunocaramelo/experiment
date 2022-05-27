@@ -21,7 +21,7 @@ define("DATA_LAYER_CONFIG", [
     "driver" => "mysql",
     "host" => "127.0.0.1",
     "port" => "3306",
-    "dbname" => "sistemacred_dev",
+    "dbname" => "sistem80_cred_hml",
     "username" => "root",
     "passwd" => "",
     "options" => [

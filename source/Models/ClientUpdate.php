@@ -20,13 +20,18 @@ class ClientUpdate extends DataLayer {
     {
         return Connect::getInstance()->query(
             "SELECT a.*, 
-                    c.CPF, 
-                    c.MATRICULA FROM sistem80_cred_base.client as c
+            c.ID,
+            c.CPF,
+            c.MATRICULA,
+            cu.*
+                FROM sistem80_cred_base.client as c
                 INNER JOIN attendances as a
-                    ON c.id = a.client_id
+                    ON c.ID = a.client_id
                 INNER JOIN filters as f
                     ON a.filter_id = f.id
-                WHERE f.cod = '{$cod}'"
+                INNER JOIN client_update as cu
+                    ON cu.client_id = c.ID
+                WHERE f.cod = 'f239c498-dd42-11ec-92a7-641c67da87be'"
         )
         ->fetchAll();
     }

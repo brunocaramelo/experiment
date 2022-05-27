@@ -574,6 +574,8 @@ $companyLogo = ($logo ? image($logo, 100, 100) : "");
     <script src="<?= theme("/assets/js/table2csv.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
 
     <script type="text/javascript">
+        
+
         var path = '<?php echo url(); ?>'
 
         hs.graphicsDir = '<?= theme("/assets/highslide/graphics/", CONF_VIEW_THEME_ADMIN); ?>'
@@ -616,6 +618,7 @@ $companyLogo = ($logo ? image($logo, 100, 100) : "");
         })
 
         $('table.display2').DataTable();
+        
 
         var table = $('#example1').DataTable({
             "ordering": true,
