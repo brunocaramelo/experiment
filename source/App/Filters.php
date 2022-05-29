@@ -6,6 +6,7 @@ use Source\Models\Attendance;
 use Source\Models\AttendanceReturn;
 use Source\Models\Category;
 use Source\Models\Organ;
+use Source\Models\ClientOrgan;
 use Source\Models\Patent;
 use Source\Models\User;
 use Source\Models\Bank;
@@ -833,7 +834,7 @@ class Filters extends Admin
 
         $filter_organ_siapes = (new FilterOrganSiape())->find("filter_id=:id", "id={$filter->id}")->fetch(true);
 
-        $organs = (new Organ())->find()->fetch(true);
+        $organs = (new ClientOrgan())->find()->fetch(true);
         $categories = (new Category())->find()->fetch(true);
         $patents = (new Patent())->find()->fetch(true);
         $attendence_returns = (new AttendanceReturn())->find()->fetch(true);
