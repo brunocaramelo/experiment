@@ -31,9 +31,8 @@ class ClientUpdate extends DataLayer {
                     ON a.filter_id = f.id
                 INNER JOIN client_update as cu
                     ON cu.client_id = c.ID
-                WHERE f.cod = 'f239c498-dd42-11ec-92a7-641c67da87be'"
+                WHERE f.cod = '{$cod}'"
         )
         ->fetchAll();
     }
-
 }
