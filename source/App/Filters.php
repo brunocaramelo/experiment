@@ -652,8 +652,8 @@ class Filters extends Admin
             return;
         }
 
-
-        $organs = (new Organ())->find()->fetch(true);
+        // $organs = (new Organ())->find()->fetch(true);
+        $organs = (new Organ())->getOrgansByAccountIdOfLoggedUserId();
         $categories = (new Category())->find()->fetch(true);
         $patents = (new Patent())->find()->fetch(true);
         $attendence_returns = (new AttendanceReturn())->find()->fetch(true);

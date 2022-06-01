@@ -21,11 +21,27 @@ class Organ extends DataLayer {
         return Connect::getInstance()
             ->query(
                 "SELECT o.*, 
-                        co.id as client_organ_id, 
-                        co.account_id as client_organ_account_id 
-                            FROM organs as o
-                                LEFT JOIN client_organ as co
+                        co.id AS client_organ_id, 
+                        co.account_id AS client_organ_account_id 
+                            FROM organs AS o
+                                LEFT JOIN client_organ AS co
                                 ON o.id = co.organ_id"
+            )
+            ->fetchAll();
+    }
+
+    public function getOrgansByAccountIdOfLoggedUserId()
+    {
+        $loggedUserId = user()->account_id;
+        return Connect::getInstance()
+            ->query(
+                "SELECT 
+                    o.id, 
+                    o.organ 
+                    FROM client_organ AS co
+                        INNER JOIN organs AS o
+                            ON co.organ_id = o.id
+                        WHERE co.account_id = '{$loggedUserId}'"
             )
             ->fetchAll();
     }
