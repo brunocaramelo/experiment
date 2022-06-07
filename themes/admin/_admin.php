@@ -833,6 +833,16 @@ $companyLogo = ($logo ? image($logo, 100, 100) : "");
                 "infoEmpty": "Nenhum Registro Encontrado",
                 "infoFiltered": "(filtrar por _MAX_ total de registro)"
             },
+            buttons: [
+                {
+                    extend: 'excel',
+                    footer: true,
+                    exportOptions: {
+                        columns: [0, 1, 2, 4, 5, 6, 7, 8, 9, 10]
+                    },
+
+                },
+            ],
             responsive: true
         });
 
@@ -854,6 +864,16 @@ $companyLogo = ($logo ? image($logo, 100, 100) : "");
                 "infoEmpty": "Nenhum Registro Encontrado",
                 "infoFiltered": "(filtrar por _MAX_ total de registro)"
             },
+            buttons: [
+                {
+                    extend: 'excel',
+                    footer: true,
+                    exportOptions: {
+                        columns: [0, 1, 2]
+                    },
+
+                },
+            ],
             responsive: true
         });
 

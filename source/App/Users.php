@@ -11,6 +11,8 @@ use Source\Models\UserLogin;
 use Source\Support\Pager;
 use Source\Support\Thumb;
 use Source\Support\Upload;
+use Source\Models\Organ;
+use Source\Models\ClientOrgan;
 
 /**
  * Description of Users
@@ -650,20 +652,30 @@ class Users extends Admin
             false
         );
 
+        $organs = (new Organ)->find()->fetch(true);
+        $clientOrgans = (new ClientOrgan)->getClientOrgansByAccountId($data['account']);
+
+        $arrClientOrgans = [];
+        foreach ($clientOrgans as $clientOrgan) {
+            $arrClientOrgans[] = $clientOrgan->id; 
+        }
+
         echo $this->view->render("users/account_update", [
             "menu" => "user",
             "submenu" => "home",
             "head" => $head,
-            "account" => $account
+            "account" => $account,
+            "organs" => $organs,
+            "arrClientOrgans" => $arrClientOrgans
         ]);
     }
 
     public function accountUpdated(array $data): void
     {
-
         $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
 
         $account = (new Account())->findById($data["account"]);
+
 
         if (!$account) {
             $this->message->info("Você tentou acessar uma conta que não existe")->flash();
@@ -707,8 +719,25 @@ class Users extends Admin
         $user->email = $data["email"];
         $user->save2();
 
+        $clientOrgan = new ClientOrgan;
+        $clientOrgans = $clientOrgan->find("account_id=:a_id", "a_id={$account->id}")->fetch(true);
+
+        if ($clientOrgans) {
+            foreach ($clientOrgans as $clientOrgan) {
+                $clientOrgan->destroy();
+            }
+        }
+        
         $this->message->info("Cliente alterado com sucesso...")->flash();
         $json["redirect"] = url("/clientes/alterar/{$account->id}");
+
+        $data['organs'] = $data['organs'] ?? [];
+        foreach ($data['organs'] as $organId) {  
+            $clientOrgan = new ClientOrgan;         
+            $clientOrgan->account_id = $account->id;
+            $clientOrgan->organ_id = $organId ?? null;
+            $clientOrgan->save();
+        }
 
         echo json_encode($json);
         return;
