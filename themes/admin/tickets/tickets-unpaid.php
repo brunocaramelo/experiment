@@ -77,7 +77,8 @@
                             
                             <?php
                                 $isUrlBoletoAPagar = url($_SERVER["REQUEST_URI"]) == url('/boletos-a-pagar');
-                                if (user()->level_id == 2 && $isUrlBoletoAPagar && $ticketToPay->status == 'Boleto não pago'): 
+                                $status = $ticketToPay->status ?? null;
+                                if (user()->level_id == 2 && $isUrlBoletoAPagar && $status == 'Boleto não pago'): 
                             ?>
                                 <td>
                                 <form action="<?= url("/boletos/alterar/{$ticketToPay->id}/cliente/{$ticketToPay->account_id}") ?>" method="post">

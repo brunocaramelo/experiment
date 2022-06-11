@@ -433,10 +433,10 @@ $companyLogo = ($logo ? image($logo, 100, 100) : "");
                 </nav>
                 <!-- /.sidebar-menu -->
                 <?php
-                    $ticketToPay = $ticketToPay ?? null;
-                    if ($ticketToPay) {
-                        $daysRemaining = Carbon::now()->diff($ticketToPay->due_date)->d;
-                        if ($ticketToPay && user()->level_id == 2 && $daysRemaining <= 2) {
+                    $firstTicketToPayGreatherThanToday = $firstTicketToPayGreatherThanToday ?? null;
+                    if ($firstTicketToPayGreatherThanToday) {
+                        $daysRemaining = Carbon::now()->diff($firstTicketToPayGreatherThanToday->due_date)->d;
+                        if ($firstTicketToPayGreatherThanToday && user()->level_id == 2 && $daysRemaining <= 2) {
                             include __DIR__."/./tickets/components/notification.php";
                         }
                     }
@@ -489,7 +489,7 @@ $companyLogo = ($logo ? image($logo, 100, 100) : "");
             </div>
         </div>
     </div>
-    <!-- jQuery -->
+    jQuery
     <script src="<?= url("/shared/scripts/jquery.min.js"); ?>"></script>
 
     <script src="<?= url("/shared/scripts/jquery.form.js"); ?>"></script>

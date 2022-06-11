@@ -72,6 +72,7 @@ class Ticket extends Admin
     {
         $tickets = (new TicketModel())->getPaidTicketsOfClientOrderedByDueDate(); // model
         $firstTicketToPay = (new TicketModel())->getFirstTicketToPayByUserAccountId() ?? null;
+        $firstTicketToPayGreatherThanToday = (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday();
 
         $head = $this->seo->render(
             CONF_SITE_NAME . " | Boletos pagos",
@@ -87,6 +88,7 @@ class Ticket extends Admin
             "head" => $head,
             "tickets" => $tickets,
             "ticketToPay" => $firstTicketToPay,
+            "firstTicketToPayGreatherThanToday" => $firstTicketToPayGreatherThanToday,
         ]);
     }
 
@@ -94,6 +96,7 @@ class Ticket extends Admin
     {
         $tickets = (new TicketModel())->getUnpaidTicketsOfClientOrderedByDueDate(); // model
         $firstTicketToPay = (new TicketModel())->getFirstTicketToPayByUserAccountId() ?? null;
+        $firstTicketToPayGreatherThanToday = (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday();
 
         $head = $this->seo->render(
             CONF_SITE_NAME . " | Boletos a pagar",
@@ -109,19 +112,13 @@ class Ticket extends Admin
             "head" => $head,
             "tickets" => $tickets,
             "ticketToPay" => $firstTicketToPay,
+            "firstTicketToPayGreatherThanToday" => $firstTicketToPayGreatherThanToday,
         ]);
     }
 
     public function markTicketAsPaid(array $data)
     {
         if (!empty($data["action"]) && $data["action"] == "markTicketAsPaid") {
-            if (!empty($data['csrf'])) {
-                if ($_REQUEST && !csrf_verify($_REQUEST)) {
-                    $json["message"] = "Erro ao enviar o formulário, atualize a página";
-                    echo json_encode($json);
-                    return;
-                }
-            }
 
             $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
 
@@ -299,14 +296,6 @@ class Ticket extends Admin
     public function update(array $data)
     {
         if (!empty($data["action"]) && $data["action"] == "markTicketAsPaid") {
-            if (!empty($data['csrf'])) {
-                if ($_REQUEST && !csrf_verify($_REQUEST)) {
-                    $json["message"] = "Erro ao enviar o formulário, atualize a página";
-                    echo json_encode($json);
-                    return;
-                }
-            }
-
             return $this->markTicketAsPaid($data);
         }
 
@@ -367,13 +356,6 @@ class Ticket extends Admin
     public function updateRedirectToIndex(array $data)
     {
         if (!empty($data["action"]) && $data["action"] == "markTicketAsPaid") {
-            if (!empty($data['csrf'])) {
-                if ($_REQUEST && !csrf_verify($_REQUEST)) {
-                    $json["message"] = "Erro ao enviar o formulário, atualize a página";
-                    echo json_encode($json);
-                    return;
-                }
-            }
 
             return $this->markTicketAsPaid($data);
         }

@@ -62,6 +62,7 @@ class Ticket extends DataLayer
     public function getFirstTicketToPayByUserAccountId()
     {
         $userAccountId = user()->account_id;
+        $currentDate = date('Y-m-d');
         return Connect::getInstance()
                 ->query(
                     "SELECT t.*, a.description 
@@ -69,6 +70,22 @@ class Ticket extends DataLayer
                         INNER JOIN accounts as a
                             ON t.account_id = a.id
                             WHERE t.account_id={$userAccountId} AND t.status = 'Boleto não pago'
+                                ORDER BY t.due_date"
+                )->fetch(true);
+    }
+
+    public function getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday()
+    {
+        $userAccountId = user()->account_id;
+        $currentDate = date('Y-m-d');
+        return Connect::getInstance()
+                ->query(
+                    "SELECT t.*, a.description 
+                        FROM tickets as t
+                        INNER JOIN accounts as a
+                            ON t.account_id = a.id
+                            WHERE t.account_id={$userAccountId} AND t.status = 'Boleto não pago'
+                            AND t.due_date >= '{$currentDate}'
                                 ORDER BY t.due_date"
                 )->fetch(true);
     }

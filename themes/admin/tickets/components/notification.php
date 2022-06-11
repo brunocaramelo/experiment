@@ -4,7 +4,7 @@
     <div class="notification-body">
         <strong class="notification-text">
             <i class="nav-icon fas fa-exclamation-circle"></i> O boleto de código de barras 
-            <?= $ticketToPay->bar_code ?> vencerá dia <?= date_fmt_br2($ticketToPay->due_date) ?>.
+            <?= $firstTicketToPayGreatherThanToday->bar_code ?> vencerá dia <?= date_fmt_br2($firstTicketToPayGreatherThanToday->due_date) ?>.
         </strong>
     </div>
     <div class="notification-body pt-3">
@@ -12,12 +12,12 @@
             <div class="row">
                 <div class="col-7">
                     <?php
-                        $redirectTo = $_SERVER['REQUEST_URI'] == '/boletos' ? '/boletos' : "/boletos/cliente/{$ticketToPay->account_id}";
+                        $redirectTo = $_SERVER['REQUEST_URI'] == '/boletos' ? '/boletos' : "/boletos/cliente/{$firstTicketToPayGreatherThanToday->account_id}";
                     ?>
-                    <form action="<?= url("/boletos/alterar/{$ticketToPay->id}/cliente/{$ticketToPay->account_id}?redirectTo={$redirectTo}") ?>" method="post">
+                    <form action="<?= url("/boletos/alterar/{$firstTicketToPayGreatherThanToday->id}/cliente/{$firstTicketToPayGreatherThanToday->account_id}?redirectTo={$redirectTo}") ?>" method="post">
                         <?= csrf_input(); ?>
-                        <input type="hidden" name="ticketId" value="<?= $ticketToPay->id ?>" />
-                        <input type="hidden" name="account_id" value="<?= $ticketToPay->account_id ?>" />
+                        <input type="hidden" name="ticketId" value="<?= $firstTicketToPayGreatherThanToday->id ?>" />
+                        <input type="hidden" name="account_id" value="<?= $firstTicketToPayGreatherThanToday->account_id ?>" />
                         <input type="hidden" name="action" value="markTicketAsPaid" />
                         <button type="submit" class="btn btn-success w-100">
                             <i class="nav-icon fas fa-check"></i> Marcar como pago

@@ -73,7 +73,8 @@
                             
                             <?php
                                 $isUrlBoletoAPagar = url($_SERVER["REQUEST_URI"]) == url('/boletos-a-pagar');
-                                if (user()->level_id == 2 && $isUrlBoletoAPagar && $ticketToPay->status == 'Boleto não pago'): 
+                                $status = $status = $ticketToPay->status ?? null;
+                                if (user()->level_id == 2 && $isUrlBoletoAPagar && $status == 'Boleto não pago'): 
                             ?>
                                 <td>
                                     <button type="submit" class="btn btn-success w-100">
