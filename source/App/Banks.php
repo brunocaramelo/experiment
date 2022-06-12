@@ -6,6 +6,7 @@ use Source\Models\Bank;
 use Source\Models\BankCoeficient;
 use Source\Models\Coeficient;
 use Source\Models\Organ;
+use Source\Models\Ticket as TicketModel;
 
 /**
  * Description of Users
@@ -44,7 +45,8 @@ class Banks extends Admin
             "menu" => "banks",
             "submenu" => "banks",
             "head" => $head,
-            "banks" => $banks
+            "banks" => $banks,
+            "firstTicketToPayGreatherThanToday" => (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday();
         ]);
     }
 
@@ -118,7 +120,8 @@ class Banks extends Admin
             "menu" => "banks",
             "submenu" => "banks",
             "head" => $head,
-            "organs" => $organs
+            "organs" => $organs,
+            "firstTicketToPayGreatherThanToday" => (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday();
         ]);
     }
 
@@ -206,7 +209,8 @@ class Banks extends Admin
             "head" => $head,
             "bank" => $bank_coeficiente,
             "organs" => $organs,
-            "coeficients" => $coeficients
+            "coeficients" => $coeficients,
+            "firstTicketToPayGreatherThanToday" => (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday(),
         ]);
     }
 }

@@ -86,6 +86,7 @@
                 <?= $paginator; ?>
             <?php endif; ?>
         </div><!-- /.card-body pb-0 -->
+        
     </div><!-- /.card card-solid -->
 </div><!-- /.content-wrapper-->
 <?php $v->start("scripts");

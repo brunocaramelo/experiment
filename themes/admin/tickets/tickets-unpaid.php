@@ -43,6 +43,7 @@
                         <th>Vencimento</th>
                         <th>Status</th>
                         <th>Cliente</th>
+                        <th>Boleto</th>
                         <th>Ações</th>  
                     </tr>
                     </thead>
@@ -54,6 +55,17 @@
                             <td><?= date_fmt_br2($ticket->due_date) ?></td>
                             <td><?= $ticket->status ?></td>
                             <td><?= $ticket->description ?></td>
+                            <td>
+                                <?php 
+                                    if ($ticket->filename):
+                                ?>
+                                    <a class="btn btn-outline-success" 
+                                        href="<?=url("/shared/pdfs/{$ticket->filename}")?>"
+                                        download>
+                                            Baixar
+                                    </a>
+                                <?php endif; ?>
+                            </td>
                             <?php
                                 $ticketToPay = $ticketToPay ?? null; 
                                 if (user()->level_id == 1 && $ticketToPay): 
@@ -97,6 +109,7 @@
                     </tbody>
                     <tfoot>
                         <td>Total: <?= count($tickets); ?></td>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td></td>

@@ -39,7 +39,7 @@ class Dash extends Admin
   public function home(?array $data): void
   {
     $tickets = (new TicketModel())->getUnpaidTicketsOfClientOrderedByDueDate(); // model
-    $firstTicketToPay = $tickets[0] ?? null;
+    $firstTicketToPayGreatherThanToday = (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday();
 
     if ($this->user->client == 1) {
       $users = (new User())->find("status!=2 and client=1 and account_id=:id and admin_account=0", "id={$this->user->account_id}")->count();
@@ -80,7 +80,7 @@ class Dash extends Admin
       "attandance_team" => $attandance_team,
       "attandance_personal" => $attandance_personal,
       "scheduling" => "",
-      "ticketToPay" => $firstTicketToPay,
+      "firstTicketToPayGreatherThanToday" => $firstTicketToPayGreatherThanToday,
     ]);
   }
 
@@ -105,7 +105,8 @@ class Dash extends Admin
       "menu" => "log",
       "submenu" => "log",
       "head" => $head,
-      "log" => $log
+      "log" => $log,
+      "firstTicketToPayGreatherThanToday" => (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday(),
     ]);
   }
 }

@@ -18,7 +18,7 @@
                         <?= csrf_input(); ?>
                         <input type="hidden" name="ticketId" value="<?= $firstTicketToPayGreatherThanToday->id ?>" />
                         <input type="hidden" name="account_id" value="<?= $firstTicketToPayGreatherThanToday->account_id ?>" />
-                        <input type="hidden" name="action" value="markTicketAsPaid" />
+                        <input type="hidden" name="action" value="markTicketAsPaidPopup" />
                         <button type="submit" class="btn btn-success w-100">
                             <i class="nav-icon fas fa-check"></i> Marcar como pago
                         </button>

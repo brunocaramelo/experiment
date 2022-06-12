@@ -9,6 +9,7 @@ use Source\Models\User;
 use CoffeeCode\DataLayer\Connect;
 use Source\Models\Bank;
 use Source\Support\Message;
+use Source\Models\Ticket as TicketModel;
 
 class Auxiliar extends Admin{
 

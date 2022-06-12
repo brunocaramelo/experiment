@@ -13,6 +13,7 @@ use Source\Support\Thumb;
 use Source\Support\Upload;
 use Source\Models\Organ;
 use Source\Models\ClientOrgan;
+use Source\Models\Ticket as TicketModel;
 
 /**
  * Description of Users
