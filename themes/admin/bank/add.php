@@ -38,7 +38,7 @@
                                 <!-- checkbox -->
                                 <div class="form-group clearfix">
                                     <div class="icheck-primary d-inline">
-                                        <input type="checkbox" name="status" id="checkboxPrimary1">
+                                        <input type="checkbox" name="status" id="checkboxPrimary1" checked>
                                         <label for="checkboxPrimary1">
                                             Ativo
                                         </label>
@@ -124,6 +124,7 @@
           $(document).ready(function() {
             $("#btn-adicionar-coeficiente").click(function(){
                 var rowCount = $("#table tr").length;
+                var rowCountText = $("#table tr").length - 1;
                 if($("#description").val()=="" || $("#coefficient").val()=="" || $("#expiration_date_init").val()=="" || $("#expiration_date_end").val()==""){
                     alert("Preencha todos os campos")
                 }else{
@@ -137,11 +138,11 @@
                     $("#table").append("<td class='delete-line_"+rowCount+"'>"+$("#expiration_date_end").val()+"</td>");
                     $("#table").append("<td class='delete-line_"+rowCount+"'><i class='fas fa-trash text-danger' onclick='remove2("+rowCount+")'  table-click='"+rowCount+"' style='cursor:pointer'></i></td>");
                     $("#table").append("</tr>");
-                    $("#data-coeficiente").append("<input type='hidden' name='description_"+rowCount+"' id='description_"+rowCount+"' value='"+$("#description").val()+"'>");
-                    $("#data-coeficiente").append("<input type='hidden' name='coefficient_"+rowCount+"' id='coefficient_"+rowCount+"' value='"+$("#coefficient").val()+"'>");
-                    $("#data-coeficiente").append("<input type='hidden' name='organ_"+rowCount+"' id='organ_"+rowCount+"' value='"+$("#organ").val()+"'>");
-                    $("#data-coeficiente").append("<input type='hidden' name='expiration_date_init_"+rowCount+"' id='expiration_date_init_"+rowCount+"' value='"+$("#expiration_date_init").val()+"'>");
-                    $("#data-coeficiente").append("<input type='hidden' name='expiration_date_end_"+rowCount+"' id='expiration_date_end_"+rowCount+"' value='"+$("#expiration_date_end").val()+"'>");
+                    $("#data-coeficiente").append("<input type='hidden' name='description_"+rowCountText+"' id='description_"+rowCount+"' value='"+$("#description").val()+"'>");
+                    $("#data-coeficiente").append("<input type='hidden' name='coefficient_"+rowCountText+"' id='coefficient_"+rowCount+"' value='"+$("#coefficient").val()+"'>");
+                    $("#data-coeficiente").append("<input type='hidden' name='organ_"+rowCountText+"' id='organ_"+rowCount+"' value='"+$("#organ").val()+"'>");
+                    $("#data-coeficiente").append("<input type='hidden' name='expiration_date_init_"+rowCountText+"' id='expiration_date_init_"+rowCount+"' value='"+$("#expiration_date_init").val()+"'>");
+                    $("#data-coeficiente").append("<input type='hidden' name='expiration_date_end_"+rowCountText+"' id='expiration_date_end_"+rowCount+"' value='"+$("#expiration_date_end").val()+"'>");
                     $("#description").val("")
                     $("#coefficient").val("")
                     $("#expiration_date_init").val("")

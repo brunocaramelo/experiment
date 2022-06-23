@@ -108,7 +108,7 @@ class Auxiliar extends Admin{
 
         $connect = Connect::getInstance();
 
-        $cities = $connect->query("SELECT cidade_codigo,cidade_descricao FROM sistem80_cep.cidade WHERE Uf_codigo = ".$data["state"]." ORDER BY cidade_descricao");
+        $cities = $connect->query("SELECT cidade_codigo,cidade_descricao FROM cidade WHERE Uf_codigo = ".$data["state"]." ORDER BY cidade_descricao");
         
         echo json_encode(["cities" => $cities->fetchAll()]);
     
@@ -226,5 +226,21 @@ class Auxiliar extends Admin{
         }*/
 
         echo json_encode(["resume" => $resume->fetchAll()]);
+    }
+
+    public function bankCoeficientSelect($data){
+
+        $connect = Connect::getInstance();
+        $today = date("Y-m-d");
+        $coeficients = $connect->query("SELECT id,description,coeficient FROM coeficients WHERE bank_coeficient_id = ".$data["bank"]." and expiration_date_init<='".$today."' and expiration_date_end>='".$today."'");
+        echo json_encode(["coeficient" => $coeficients->fetchAll()]);
+    
+    }
+
+    public function coeficientValue($data){
+        $connect = Connect::getInstance();
+        $today = date("Y-m-d");
+        $coeficient_values = $connect->query("SELECT coeficient FROM coeficients WHERE id = ".$data["coeficient"]." ");
+        echo json_encode(["coeficient_value" => $coeficient_values->fetchAll()]);
     }
 }

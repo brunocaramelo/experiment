@@ -113,7 +113,7 @@
                                             foreach ($coeficients as $coeficient) : ?>
                                                 <tr class='delete-line_<?= $i ?>'>
                                                     <td><?= $coeficient->description ?></td>
-                                                    <td><?= $coeficient->organ ?></td>
+                                                    <td><?= returnOrganReverse($coeficient->organ_id) ?></td>
                                                     <td><?= $coeficient->coeficient ?></td>
                                                     <td><?= date_fmt2($coeficient->expiration_date_init) ?></td>
                                                     <td><?= date_fmt2($coeficient->expiration_date_end) ?></td>
@@ -121,7 +121,7 @@
                                                 </tr>
                                                 <input type='hidden' name='description_old_<?= $i ?>' id='description_old_<?= $i ?>' value='<?= $coeficient->description ?>'>
                                                 <input type='hidden' name='coefficient_old_<?= $i ?>' id='coefficient_old_<?= $i ?>' value='<?= $coeficient->coeficient ?>'>
-                                                <input type='hidden' name='organ_old_<?= $i ?>' id='organ_old_<?= $i ?>' value='<?= $coeficient->organ ?>'>
+                                                <input type='hidden' name='organ_old_<?= $i ?>' id='organ_old_<?= $i ?>' value='<?= returnOrganReverse($coeficient->organ_id) ?>'>
                                                 <input type='hidden' name='expiration_date_init_old_<?= $i ?>' id='expiration_date_init_old_<?= $i ?>' value='<?= date_fmt2($coeficient->expiration_date_init) ?>'>
                                                 <input type='hidden' name='expiration_date_end_old_<?= $i ?>' id='expiration_date_end_old_<?= $i ?>' value='<?= date_fmt2($coeficient->expiration_date_end) ?>'>
                                         <?php $i++;
@@ -131,7 +131,7 @@
                                 </table>
                             </div>
                         </div>
-                        <input type="hidden" name="count_coeficient_old" id="count_coeficient_old" value="<?=count($coeficients) ?>">
+                        <input type="hidden" name="count_coeficient_old" id="count_coeficient_old" value="<?php if($coeficients): echo count($coeficients); else: echo "0"; endif; ?>">
                         <input type="hidden" name="count_coeficient" id="count_coeficient">
                         <div class="col-md-12" id="data-coeficiente">
                         </div>

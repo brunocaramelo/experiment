@@ -44,18 +44,32 @@
                             <?php if ($filter->status_filter == "AGUARDANDO" || $filter->status_filter == "PAUSADO") : ?>
                                 <div class="col-md-2"><button class="btn btn-lg btn-outline-success" id="btn_editar"><i class="fas fa-edit"> Salvar Filtro</i></button></div>
                                 <?php if ($filter->waiting == 0) : ?>
-                                    <div class="col-md-2"><a href="" class="btn btn-lg btn-outline-success" data-post="<?= url("/filtro/mudar/{$filter->cod}"); ?>" data-action="play" data-client_cod="<?= $filter->cod; ?>"><i class="fas fa-play"> Iniciar filtro</i></a></div>
+                                    <div class="col-md-2"><a href="" class="btn btn-lg btn-outline-success" data-post="<?= url("/filtro/mudar/{$filter->cod}"); ?>" <?php if ($filter->status_filter == "FINALIZADO") : ?> aria-disabled="true" <?php endif; ?> data-action="play" data-client_cod="<?= $filter->cod; ?>"><i class="fas fa-play"> Iniciar filtro</i></a></div>
                                 <?php else : ?>
-                                    <div class="col-md-2"><a href="" class="btn btn-lg btn-outline-success" data-post="<?= url("/filtro/mudar/{$filter->cod}"); ?>" data-action="play" data-client_cod="<?= $filter->cod; ?>"><i class="fas fa-play"> Reiniciar filtro</i></a></div>
+                                    <?php if ($filter->status_filter == "FINALIZADO") : ?>
+                                        <div class="col-md-2"><button class="btn btn-lg btn-outline-success" disabled><i class="fas fa-play"> Reiniciar filtro</i></button></div>
+                                    <?php else : ?>
+                                        <div class="col-md-2"><a href="" class="btn btn-lg btn-outline-success" data-post="<?= url("/filtro/mudar/{$filter->cod}"); ?>" data-action="play" <?php if ($filter->status_filter == "FINALIZADO") : ?> aria-disabled="true" <?php endif; ?> data-client_cod="<?= $filter->cod; ?>"><i class="fas fa-play"> Reiniciar filtro</i></a></div>
+                                    <?php endif; ?>
+                                    
                                 <?php endif ?>
                             <?php else : ?>
                                 <div class="col-md-2"><button class="btn btn-lg btn-outline-success" disabled><i class="fas fa-edit"> Salvar Filtro</i></button></div>
-                                <div class="col-md-2"><a href="" class="btn btn-lg btn-outline-secondary" data-post="<?= url("/filtro/mudar/{$filter->cod}"); ?>" data-action="pause" data-client_cod="<?= $filter->cod; ?>"><i class="fas fa-pause"> Pausar filtro</i></a></div>
+                                <?php if ($filter->status_filter == "FINALIZADO") : ?>
+                                    <div class="col-md-2"><button class="btn btn-lg btn-outline-secondary" disabled><i class="fas fa-pause"> Pausar filtro</i></button></div>
+                                <?php else : ?>
+                                    <div class="col-md-2"><a href="" class="btn btn-lg btn-outline-secondary" data-post="<?= url("/filtro/mudar/{$filter->cod}"); ?>" data-action="pause" data-client_cod="<?= $filter->cod; ?>"><i class="fas fa-pause"> Pausar filtro</i></a></div>
+                                <?php endif; ?>
                             <?php endif; ?>
                             <div class="col-md-2"><a href="<?= url("/filtro/copy/{$filter->cod}"); ?>" class="btn btn-lg btn-outline-primary"> Duplicar filtro</i></a></div>
                             <!--div class="col-md-2"><a href="#" class="btn btn-lg btn-outline-primary"> Duplicar filtro</i></a></div-->
                             <div class="col-md-2"><a href="" class="btn btn-lg btn-outline-danger" data-post="<?= url("/filtro/excluir/{$filter->cod}"); ?>" data-action="delete" data-confirm="ATENÇÃO: Tem certeza que deseja excluir esse filtro e todos os dados relacionados a ele? Essa ação não pode ser desfeita!" data-client_cod="<?= $filter->cod; ?>"><i class="fas fa-trash"> Excluir filtro</i></a></div>
-                            <div class="col-md-2"><a href="" class="btn btn-lg btn-outline-dark" data-post="<?= url("/filtro/mudar/{$filter->cod}"); ?>" data-action="finish" data-confirm="ATENÇÃO: Deseja finalizar esse filtro?" data-client_cod="<?= $filter->cod; ?>"><i class="fas fa-check"> Finalizar filtro</i></a></div>
+                            <?php if ($filter->status_filter == "FINALIZADO") : ?>
+                                <div class="col-md-2"><button class="btn btn-lg btn-outline-dark" disabled><i class="fas fa-check"> Finalizar filtro</i></button></div>
+                            <?php else : ?>
+                                <div class="col-md-2"><a href="" class="btn btn-lg btn-outline-dark" data-post="<?= url("/filtro/mudar/{$filter->cod}"); ?>" data-action="finish" data-confirm="ATENÇÃO: Deseja finalizar esse filtro?" data-client_cod="<?= $filter->cod; ?>"><i class="fas fa-check"> Finalizar filtro</i></a></div>
+                            <?php endif; ?>
+
                             <div class="col-md-1"></div>
                         </div><br>
                         <div class="tab-pane fade show active" id="data" role="tabpanel" aria-labelledby="data-tab">
@@ -103,7 +117,7 @@
                                 </div>
                                 <div class="col-md-8">
                                     <label>Quantidade de Clientes Atendidos:</label>
-                                    <?= $attendanceCount ?>
+                                    <?php if($attendanceCount): echo count($attendanceCount); else: echo 0;endif; ?>
                                 </div>
                             </div>
                             <br>

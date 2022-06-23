@@ -300,6 +300,13 @@ function url_back(): string
     return ($_SERVER['HTTP_REFERER'] ?? url());
 }
 
+function UrlAtual(): string
+{
+    $dominio= $_SERVER['HTTP_HOST'];
+    $url = "http://" . $dominio. $_SERVER['REQUEST_URI'];
+    return $url;
+}
+
 /**
  * 
  * @param type $path
@@ -817,6 +824,41 @@ function returnState(string $state): string
     }
 }
 
+function returnOrgan(string $organ): int
+{
+    switch ($organ) {
+        case "Exército":
+            return  1;
+            break;
+        case "Marinha":
+            return 2;
+            break;
+        case "Aeronáutica":
+            return 3;
+            break;
+        case "Siape":
+            return 4;
+            break;
+    }
+}
+
+function returnOrganReverse(string $organ): string
+{
+    switch ($organ) {
+        case 1:
+            return  "Exército";
+            break;
+        case 2:
+            return "Marinha";
+            break;
+        case 3:
+            return "Aeronáutica";
+            break;
+        case 4:
+            return "Siape";
+            break;
+    }
+}
 /**
  * Retrieves the best guess of the client's actual IP address.
  * Takes into account numerous HTTP proxy headers due to variations

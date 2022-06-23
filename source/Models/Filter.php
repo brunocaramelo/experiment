@@ -204,7 +204,7 @@ class Filter extends DataLayer {
     public function returnState() {
         $connect = Connect::getInstance();
 
-        $states = $connect->query("SELECT uf_descricao FROM filter_state INNER JOIN sistem80_cep.uf as uf on uf.uf_codigo=filter_state.state_id WHERE filter_id = ".$this->id."");
+        $states = $connect->query("SELECT uf_descricao FROM filter_state INNER JOIN uf as uf on uf.uf_codigo=filter_state.state_id WHERE filter_id = ".$this->id."");
 
         return $states->fetchAll();
     }
@@ -212,7 +212,7 @@ class Filter extends DataLayer {
     public function returnCity() {
         $connect = Connect::getInstance();
         
-        $states = $connect->query("SELECT cidade_descricao FROM filter_city INNER JOIN sistem80_cep.cidade as ct on ct.cidade_codigo=filter_city.city_id WHERE filter_id = ".$this->id."");
+        $states = $connect->query("SELECT cidade_descricao FROM filter_city INNER JOIN cidade as ct on ct.cidade_codigo=filter_city.city_id WHERE filter_id = ".$this->id."");
 
         return $states->fetchAll();
     }
@@ -274,7 +274,7 @@ class Filter extends DataLayer {
     /*public function showState(){
         $connect = Connect::getInstance();
 
-        $states = $connect->query("SELECT uf_codigo,uf_descricao FROM sistem80_cep.uf WHERE uf_codigo = ".$this->state."");
+        $states = $connect->query("SELECT uf_codigo,uf_descricao FROM uf WHERE uf_codigo = ".$this->state."");
 
         return $states->fetchAll();
     
@@ -283,7 +283,7 @@ class Filter extends DataLayer {
     public function showCity(){
         $connect = Connect::getInstance();
 
-        $states = $connect->query("SELECT cidade_codigo,cidade_descricao FROM sistem80_cep.cidade WHERE cidade_codigo = ".$this->city."");
+        $states = $connect->query("SELECT cidade_codigo,cidade_descricao FROM cidade WHERE cidade_codigo = ".$this->city."");
 
         return $states->fetchAll();
     
@@ -333,6 +333,7 @@ class Filter extends DataLayer {
         $connect = Connect::getInstance();
         $query = "select client_id from filter_queue ";
         $query .= " where attendance_finish=0 and filter_id='".$filter."' ";
+        $query .= " and client_id not in (select client_id from attendances where filter_id= '" . $filter . "') ";
         $query .= " and client_id not in (select client_id from filter_client_user where account_id='" . User::UserLog()->account_id . "' and filter_id= '" . $filter . "' and user_id<>'" . User::UserLog()->id . "') ";
         $query .= " and client_id not in (select client_id from blocked_client where account_id='" . User::UserLog()->account_id . "' and status=1) ";
         $query .= " and client_id not in (select client_id from schedulings where account_id='" . User::UserLog()->account_id . "' and user_id!='" . User::UserLog()->id . "' and status=1) ";

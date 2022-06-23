@@ -45,6 +45,7 @@ use Source\Models\Scheduling;
 use Source\Support\Pager;
 use Dompdf\Dompdf;
 use Source\Data\CrediLink;
+use Source\Models\BankCoeficient;
 
 /**
  * Description of Users
@@ -90,9 +91,9 @@ class Filters extends Admin
 
         if ($this->user->admin_account == 1) {
 
-            $filter = (new ModelsFilter())->find("account_id=:id and status!=2 and status_filter!='FINALIZADO'", "id={$this->user->account_id}");
+            $filter = (new ModelsFilter())->find("account_id=:id and status!=2 ", "id={$this->user->account_id}");
         } else {
-            $filter = (new ModelsFilter())->find("account_id=:id and status!=2 and status_filter!='FINALIZADO' and id in (select filter_id from filter_users where user_id='" . $this->user->id . "') ", "id={$this->user->account_id}");
+            $filter = (new ModelsFilter())->find("account_id=:id and status!=2 and id in (select filter_id from filter_users where user_id='" . $this->user->id . "') ", "id={$this->user->account_id}");
         }
 
         $pager = new Pager(url("/filtro/"));
@@ -228,8 +229,9 @@ class Filters extends Admin
                 $until_margin_percent = $data->until_margin_percent;
             }
             if (isset($data->ignore_actived_filters)) {
-                $ignore_actived_filters = $data->ignore_actived_filters;
+                $ignore_actived_filters = 1;
             }
+            //echo $ignore_actived_filters;exit;
             $filterCreate = new ModelsFilter();
             $filterCreate->organ_id = $data->organ;
             $filterCreate->title = $data->title;
@@ -259,11 +261,14 @@ class Filters extends Admin
             $filterCreate->waiting = 1;
             $filterCreate->account_id = $this->user->account_id;
 
+
             if (!$filterCreate->save()) {
                 $json["message"] = $filterCreate->fail()->getMessage();
                 echo json_encode($json);
                 return;
             }
+
+
             if (isset($data->user)) {
                 foreach ($data->user as $user) {
                     //echo "usuarios".$user."<br>";
@@ -867,7 +872,7 @@ class Filters extends Admin
 
         $clientCount = (new FilterQueue())->find("filter_id=:id", "id={$filter->id}")->count();
 
-        $attendanceCount = (new Attendance())->find("filter_id=:id", "id={$filter->id}")->count();
+        $attendanceCount = (new Attendance())->find("filter_id=:id", "id={$filter->id}","client_id")->group("client_id")->fetch(true);
 
         $attendances = (new Attendance())->find(" filter_id=:f AND account_id=:id AND status!=2", "f={$filter->id}&id={$this->user->account_id}")->fetch(true);
 
@@ -1019,9 +1024,9 @@ class Filters extends Admin
 
         if ($this->user->admin_account == 1) {
 
-            $filters = (new ModelsFilter())->find("account_id=:id and status!=2 and status_filter='ATIVO'", "id={$this->user->account_id}");
+            $filters = (new ModelsFilter())->find("account_id=:id and status!=2 ", "id={$this->user->account_id}");
         } else {
-            $filters = (new ModelsFilter())->find("account_id=:id and status!=2 and status_filter='ATIVO' and id in (select filter_id from filter_users where user_id='" . $this->user->id . "') ", "id={$this->user->account_id}");
+            $filters = (new ModelsFilter())->find("account_id=:id and status!=2 and id in (select filter_id from filter_users where user_id='" . $this->user->id . "') ", "id={$this->user->account_id}");
         }
 
 
@@ -1032,25 +1037,25 @@ class Filters extends Admin
             $search_organ = $search . "_" . $organ;
             if ($this->user->admin_account == 1) {
                 if (!empty($search) && !empty($organ)) {
-                    $filters = (new ModelsFilter())->find("MATCH(title) AGAINST(:s) and organ_id=:o and account_id=:cod and status!=2 and status_filter='ATIVO'", "o={$organ}&s={$search}&cod={$this->user->account_id}");
+                    $filters = (new ModelsFilter())->find("MATCH(title) AGAINST(:s) and organ_id=:o and account_id=:cod and status!=2 ", "o={$organ}&s={$search}&cod={$this->user->account_id}");
                 } else {
                     if (!empty($search)) {
-                        $filters = (new ModelsFilter())->find("MATCH(title) AGAINST(:s) and account_id=:cod and status!=2 and status_filter='ATIVO'", "s={$search}&cod={$this->user->account_id}");
+                        $filters = (new ModelsFilter())->find("MATCH(title) AGAINST(:s) and account_id=:cod and status!=2 ", "s={$search}&cod={$this->user->account_id}");
                     }
                     if (!empty($organ)) {
-                        $filters = (new ModelsFilter())->find("organ_id=:o and account_id=:cod and status!=2 and status_filter='ATIVO'", "o={$organ}&cod={$this->user->account_id}");
+                        $filters = (new ModelsFilter())->find("organ_id=:o and account_id=:cod and status!=2 ", "o={$organ}&cod={$this->user->account_id}");
                     }
                 }
             } else {
 
                 if (!empty($search) && !empty($organ)) {
-                    $filters = (new ModelsFilter())->find("MATCH(title) AGAINST(:s) and organ_id=:o and account_id=:cod and status!=2 and status_filter='ATIVO' and id in (select filter_id from filter_users where user_id='" . $this->user->id . "') ", "o={$organ}&s={$search}&cod={$this->user->account_id}");
+                    $filters = (new ModelsFilter())->find("MATCH(title) AGAINST(:s) and organ_id=:o and account_id=:cod and status!=2 and id in (select filter_id from filter_users where user_id='" . $this->user->id . "') ", "o={$organ}&s={$search}&cod={$this->user->account_id}");
                 } else {
                     if (!empty($search)) {
-                        $filters = (new ModelsFilter())->find("MATCH(title) AGAINST(:s) and account_id=:cod and status!=2 and status_filter='ATIVO' and id in (select filter_id from filter_users where user_id='" . $this->user->id . "') ", "s={$search}&cod={$this->user->account_id}");
+                        $filters = (new ModelsFilter())->find("MATCH(title) AGAINST(:s) and account_id=:cod and status!=2  and id in (select filter_id from filter_users where user_id='" . $this->user->id . "') ", "s={$search}&cod={$this->user->account_id}");
                     }
                     if (!empty($organ)) {
-                        $filters = (new ModelsFilter())->find("organ_id=:o and account_id=:cod and status!=2 and status_filter='ATIVO' and id in (select filter_id from filter_users where user_id='" . $this->user->id . "') ", "o={$organ}&cod={$this->user->account_id}");
+                        $filters = (new ModelsFilter())->find("organ_id=:o and account_id=:cod and status!=2 and id in (select filter_id from filter_users where user_id='" . $this->user->id . "') ", "o={$organ}&cod={$this->user->account_id}");
                     }
                 }
             }
@@ -1245,7 +1250,7 @@ class Filters extends Admin
         //$filter_queue_consult_count = (new FilterQueueConsult())->find("filter_id=:filter_id and user_id=:user", "filter_id={$data['id']}&user={$this->user->id}")->count();
 
         $filter_client_user = (new FilterClientUser())->find("filter_id=:f and user_id=:u", "f={$data['id']}&u={$this->user->id}")->fetch();
-
+        
         if (isset($filter_client_user)) {
             $queue = $filter_client_user->client_id;
         } else {
@@ -1314,7 +1319,17 @@ class Filters extends Admin
             $filter_client_user->status = 1;
             $filter_client_user->save();
         }*/
-        $client = (new Client())->find("id=:id", "id={$queue}")->fetch();
+
+        redirect("/cliente/{$data['id']}/{$queue}");
+
+    }
+
+    /**
+     * @param array|null $data
+     */
+    public function filterClientRoute(?array $data): void
+    {
+        $client = (new Client())->find("id=:id", "id={$data['client_id']}")->fetch();
 
         $filter = (new ModelsFilter())->findById($data['id']);
 
@@ -1356,6 +1371,7 @@ class Filters extends Admin
 
         $client_loan = (new ClientLoan())->find("account_id=:account and client_id=:c", "account={$this->user->account_id}&c={$client->id}")->fetch(true);
 
+        $bank_coeficients = (new BankCoeficient())->returnBankCoeficient($client->CLIENT_ORGAN);
 
         $head = $this->seo->render(
             CONF_SITE_NAME . " | Cliente",
@@ -1384,10 +1400,11 @@ class Filters extends Admin
             "client_update" => $client_update,
             "count_attendance" => $count_attendance,
             "client_benefit" => $client_benefit,
-            "client_loan" => $client_loan
+            "client_loan" => $client_loan,
+            "bank_coeficients" => $bank_coeficients
         ]);
-    }
 
+    }
 
     /**
      * @param array|null $data
@@ -1477,6 +1494,8 @@ class Filters extends Admin
 
             $client_loan = (new ClientLoan())->find("account_id=:account and client_id=:c", "account={$this->user->account_id}&c={$client->id}")->fetch(true);
 
+            $bank_coeficients = (new BankCoeficient())->returnBankCoeficient($client->CLIENT_ORGAN);
+
             $head = $this->seo->render(
                 CONF_SITE_NAME . " | Cliente",
                 CONF_SITE_DESC,
@@ -1503,7 +1522,8 @@ class Filters extends Admin
                 "client_update" => $client_update,
                 "count_attendance" => 0,
                 "client_benefit" => $client_benefit,
-                "client_loan" => $client_loan
+                "client_loan" => $client_loan,
+                "bank_coeficients" => $bank_coeficients
             ]);
         }
     }
@@ -1552,7 +1572,7 @@ class Filters extends Admin
 
             $this->message->info("Dados atualizados com sucesso...")->flash();
             if ($data["search"] == 0) {
-                $jsonRedirect["redirect"] = url("/lista-de-trabalho/cliente/" . $data["filter_id"] . "/first");
+                $jsonRedirect["redirect"] = url("/cliente/" . $data["filter_id"] . "/".$data['client_id']);
             } else {
                 $jsonRedirect["redirect"] = url($link_redirect);
             }
@@ -1758,7 +1778,7 @@ class Filters extends Admin
 
                     $this->message->info("Dados atualizados com sucesso...")->flash();
                     if ($data["search"] == 0) {
-                        $jsonRedirect["redirect"] = url("/lista-de-trabalho/cliente/" . $data["filter_id"] . "/first");
+                        $jsonRedirect["redirect"] = url("/cliente/" . $data["filter_id"] . "/".$data['client_id']);
                     } else {
                         $jsonRedirect["redirect"] = url($link_redirect);
                     }
@@ -2020,7 +2040,7 @@ class Filters extends Admin
 
                 $this->message->info("Dados atualizados com sucesso...")->flash();
                 if ($data["search"] == 0) {
-                    $jsonRedirect["redirect"] = url("/lista-de-trabalho/cliente/" . $data["filter_id"] . "/first");
+                    $jsonRedirect["redirect"] = url("/cliente/" . $data["filter_id"] . "/".$data['client_id']);
                 } else {
                     $jsonRedirect["redirect"] = url($link_redirect);
                 }
@@ -2053,10 +2073,11 @@ class Filters extends Admin
 
         $scheduling_id = null;
 
-        $scheduling = (new Scheduling())->find("user_id=:u and client_id=:c", "u={$this->user->id}&c={$data->client_id}")->fetch();
+        $scheduling = (new Scheduling())->find("user_id=:u and client_id=:c and status!=2", "u={$this->user->id}&c={$data->client_id}")->fetch();
 
         if ($scheduling) {
-            $scheduling->destroy();
+            $scheduling->status=2;
+            $scheduling->save2();
         }
 
         if ($data->attendance_retorn == 5) {
@@ -2138,7 +2159,7 @@ class Filters extends Admin
 
             $this->message->info("Dados atualizados com sucesso...")->flash();
             if ($data->search == 0) {
-                $jsonRedirect["redirect"] = url("/lista-de-trabalho/cliente/" . $data->filter_id . "/first");
+                $jsonRedirect["redirect"] = url("/cliente/" . $data->filter_id . "/".$data->client_id);
             } else {
                 $jsonRedirect["redirect"] = url($link_redirect);
             }
@@ -2268,10 +2289,24 @@ class Filters extends Admin
         }
 
         $this->message->info("Dados atualizados com sucesso...")->flash();
-        if ($data->search == 0) {
-            $jsonRedirect["redirect"] = url("/lista-de-trabalho/cliente/" . $data->filter_id . "/first");
-        } else {
-            $jsonRedirect["redirect"] = url("/cliente/consulta/" . $data->client_id);
+
+        $clientCount = (new FilterQueue())->find("filter_id=:id", "id={$data->filter_id}")->count();
+
+        $attendanceCount = (new Attendance())->find("filter_id=:id", "id={$data->filter_id}","client_id")->group("client_id")->fetch(true);
+
+        if($clientCount!=count($attendanceCount)){
+            if ($data->search == 0) {
+                $jsonRedirect["redirect"] = url("/cliente/" . $data->filter_id . "/".$data->client_id);
+            } else {
+                $jsonRedirect["redirect"] = url("/cliente/consulta/" . $data->client_id);
+            }
+        }else{
+            $filter = (new ModelsFilter())->find("id=:f", "f={$data->filter_id}")->fetch();
+            if ($filter) {
+                $filter->status_filter = "FINALIZADO";
+                $filter->save2();
+            }
+            $jsonRedirect["redirect"] = url("/lista-de-trabalho");
         }
         echo json_encode($jsonRedirect);
         return;
@@ -2300,7 +2335,7 @@ class Filters extends Admin
 
     public function scheduling(?array $data): void
     {
-        $schedulings = (new Scheduling())->find("account_id=:id and status!=2", "id={$this->user->account_id}")->fetch(true);
+        $schedulings = (new Scheduling())->find("account_id=:id", "id={$this->user->account_id}")->fetch(true);
 
         $head = $this->seo->render(
             CONF_SITE_NAME . " | Agendamentos",

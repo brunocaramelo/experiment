@@ -62,7 +62,7 @@
                     <tbody>
                         <?php foreach ($filters as $filter) : ?>
                             
-                                <tr style="cursor:pointer" onclick="document.location = '<?= url("/lista-de-trabalho/cliente/{$filter->id}/first"); ?>';"  title="Registrar Atendimento">
+                                <tr <?php if ($filter->status_filter != "FINALIZADO") : ?> style="cursor:pointer" onclick="document.location = '<?= url("/lista-de-trabalho/cliente/{$filter->id}/first"); ?>';" <?php endif;?>  title="Registrar Atendimento">
                                     <td><b><?= $filter->codFilter(); ?></b></td>
                                     <td><b><?= $filter->organDesc()->organ ?></b></td>
                                     <td><b><?= $filter->title ?></b></td>

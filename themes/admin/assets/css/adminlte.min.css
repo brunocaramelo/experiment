@@ -80,7 +80,9 @@ table.dataTable.row-border tbody th,table.dataTable.row-border tbody td,table.da
   
 
 /* FIM Tooltip */
-
+i.far .fa-minus-square, .far .fa-minus-square, i.far.fa-minus-square { 
+	color: #f30;
+	}
 .flex {
      -webkit-box-flex: 1;
      -ms-flex: 1 1 auto;

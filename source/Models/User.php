@@ -614,7 +614,7 @@ class User extends DataLayer
     {
         $connect = Connect::getInstance();
 
-        $states = $connect->query("SELECT uf_codigo,uf_descricao FROM sistem80_cep.uf ORDER BY uf_descricao");
+        $states = $connect->query("SELECT uf_codigo,uf_descricao FROM uf ORDER BY uf_descricao");
 
         return $states->fetchAll();
     }

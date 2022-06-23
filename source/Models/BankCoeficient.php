@@ -2,6 +2,7 @@
 
 namespace Source\Models;
 use Exception;
+use CoffeeCode\DataLayer\Connect;
 use CoffeeCode\DataLayer\DataLayer;
 
 
@@ -101,5 +102,20 @@ class BankCoeficient extends DataLayer {
             return false;
         }
         return true;
+    }
+
+    public function returnBankCoeficient($organ)
+    {
+        $user = User::UserLog();
+
+        $connect = Connect::getInstance();
+
+        $today = date("Y-m-d");
+
+		$query = "select * from bank_coeficients where account_id='".$user->account_id."' and id in (select bank_coeficient_id from coeficients where organ_id='".$organ."' and expiration_date_init<='".$today."' and expiration_date_end>='".$today."')";
+
+        $bank = $connect->query($query);
+        return $bank->fetchAll();
+        //return $query;
     }
 }

@@ -32,7 +32,6 @@
                     <thead>
                         <tr>
                             <th>Consultor <span data-toggle="tooltip" data-placement="top" title="Colocar em ordem alfabetica">&and;</span></th>
-                            <th>Cliente</th>
                             <th>Matrícula <span data-toggle="tooltip" data-placement="top" title="Colocar em ordem">&and;</span></th>
                             <th>CPF <span data-toggle="tooltip" data-placement="top" title="Colocar em ordem">&and;</span></th>
                             <th>Retorna em <span data-toggle="tooltip" data-placement="top" title="Colocar em ordem">&and;</span></th>
@@ -44,7 +43,6 @@
                         <?php foreach ($schedulings as $scheduling) : ?>
                             <tr>
                                 <td><b><?= $scheduling->userDesc()->fullName() ?></b></td>
-                                <td><b><?= $scheduling->clientDesc()->NOME ?></b></td>
                                 <td><b><?= $scheduling->clientDesc()->MATRICULA ?></b></td>
                                 <td><b><?= $scheduling->clientDesc()->CPF ?></b></td>
                                 <td><b><?= date_fmt2($scheduling->date_return) ?></b></td>
@@ -60,7 +58,6 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        
                     </tfoot>
                 </table><br>
             <?php endif; ?>

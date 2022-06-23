@@ -547,7 +547,7 @@ class Users extends Admin
         }
 
         $account->login = $data["user_count"];
-        $account->base = "sistem80_cred_base_03";
+        $account->base = "sistem80_cred_base";
         $account->status_admin =  $status_admin;
         $account->status = "1";
 
@@ -572,7 +572,7 @@ class Users extends Admin
         $user->genre = 1;
         $user->client = 1;
         $user->admin_account = 1;
-        $user->base_client = "sistem80_cred_base_03";
+        $user->base_client = "sistem80_cred_base";
         $user->validate = 1;
 
         if (!$user->save3()) {

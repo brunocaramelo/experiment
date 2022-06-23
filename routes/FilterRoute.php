@@ -16,6 +16,7 @@ $router->get("/lista-de-trabalho", "Filters:workList","filter.workList");
 $router->post("/lista-de-trabalho", "Filters:workList","filter.workListPost");
 $router->get("/lista-de-trabalho/{search}/{page}", "Filters:workList","filter.workListSearch");
 $router->get("/lista-de-trabalho/cliente/{id}/{order}", "Filters:filterClient","filter.filterClient");
+$router->get("/cliente/{id}/{client_id}", "Filters:filterClientRoute","filter.filterClientRoute");
 $router->get("/lista-de-trabalho/cliente/{id}/next", "Filters:filterClientNext","filter.filterClientNext");
 $router->get("/lista-de-trabalho/consulta/{filter_id}/{id_cliente}", "Filters:filterClient","filter.filterClient");
 $router->post("/lista-de-trabalho/cliente/atualizar", "Filters:filterClientUpdate","filter.filterClientUpdate");

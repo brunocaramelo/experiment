@@ -77,6 +77,13 @@ class Scheduling extends DataLayer {
         return true;
     }
 
+    
+    public function save2(): bool {
+        parent::save();
+
+        return true;
+    }
+
    /**
      * @return User|null
      */
@@ -100,7 +107,7 @@ class Scheduling extends DataLayer {
     public static function returnScheduling(): ?Scheduling {
         $hoje = date("Y-m-d");
         $user_id = User::UserLog()->id;
-        $scheduling = (new Scheduling())->find("user_id=:id and date_return<=:d","id={$user_id}&d={$hoje}")->limit(1)->order("id ASC")->fetch();
+        $scheduling = (new Scheduling())->find("user_id=:id and date_return<=:d and status!=2","id={$user_id}&d={$hoje}")->limit(1)->order("id ASC")->fetch();
         if($scheduling){
           return (new Scheduling())->findById($scheduling->id);
         }

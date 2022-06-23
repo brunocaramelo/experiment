@@ -4,4 +4,4 @@ $router->get("/banco-e-coeficiente/cadastrar", "Banks:bankAdd","banks.bankAdd");
 $router->post("/banco-e-coeficiente/cadastrar", "Banks:bankAdd","banks.bankAdd");
 $router->get("/banco-e-coeficiente/alterar/{cod}", "Banks:bankUpdate","Banks.bankUpdate");
 $router->post("/banco-e-coeficiente/alterar/{cod}", "Banks:bankUpdate","Banks.bankUpdate");
-$router->post("/banco-e-coeficiente/excluir/{cod}", "Banks:filterDelete","Banks.filterDelete");
+$router->post("/banco-e-coeficiente/excluir/{cod}", "Banks:bankDelete","Banks.bankDelete");

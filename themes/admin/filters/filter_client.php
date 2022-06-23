@@ -37,21 +37,12 @@
             color: #fff;
             background-color: rgb(68, 68, 211);
             padding: 5px 3px;
-            margin: 0 0 25px 0;
+            margin: 0 -10px 25px -10px;
+            font-size: 1.1rem;
+            text-align: center;
         }
-		hr.style-one {
-			border: 0;
-			height: 1px;
-			background: #333;
-			background-image: linear-gradient(to right, #ccc, #333, #ccc);
-		}		
-		hr.style-three {
-			border: 0;
-			border-bottom: 1px dashed #ccc;
-			background: #999;
-		}
 
-        #btnOpenCalcFin{
+        #btnOpenCalcFin {
             position: fixed;
             right: 20px;
             bottom: 70px;
@@ -71,11 +62,11 @@
             box-shadow: #66666652 0px 1px 5px 2px;
         }
 
-        .ui-calc-financ h1{
+        .ui-calc-financ h1 {
             font-size: 1.4rem;
         }
 
-        .ui-calc-financ .close{
+        .ui-calc-financ .close {
             background-color: #fff;
             border-radius: 100%;
             padding: 10px;
@@ -94,63 +85,75 @@
     <!-- Main content -->
     <section class="content">
         <div class="row">
-			<table width="65%" border="0" style="margin: 10px 20px 0px 20px;">
-			  <tbody>
-				<tr>
-				  <td width="50px">
-					  
-					<?php if (user()->account()->use_api == 1) : ?>
-						<form action="<?= $router->route("filter.filterClientUpdate"); ?>" method="post">
-							<input type="hidden" name="client_id" value="<?= $client->id ?>">
-							<input type="hidden" name="filter_id" value="<?= $filter_id ?>">
-							<input type="hidden" name="search" value="<?= $search ?>">
-							<input type="hidden" name="update" value="data">
-							<input type="hidden" name="url_redirect" value="<?= $_SERVER['REQUEST_URI'] ?>">
-							<button class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="ATUALIZAR DADOS"><i class="fas fa-sync"></i></button>
-						</form>
-					<?php endif; ?>
-					  
-					</td>
-				  <td>
-					  
-					<?php if ($release_next_customer == 0) : ?>
-							<a href="<?= url("/lista-de-trabalho/cliente/{$filter_id}/next") ?>" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="PRÓXIMO CLIENTE"><i class="fas fa-forward"></i></a>
-							<?php else :
-							if ($count_attendance > 0) : ?>
-								<a href="<?= url("/lista-de-trabalho/cliente/{$filter_id}/next") ?>" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="PRÓXIMO CLIENTE"><i class="fas fa-forward"></i></a>
-							<?php else : ?>
-								<button class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" disabled title="PRÓXIMO CLIENTE"><i class="fas fa-forward"></i></button>
-						<?php endif;
-						endif;
-						?>
-					  
-					  
-					</td>
-				  <td align="right">
-
-						<!--button class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="GERAR PDF"><i class="far fa-file-pdf"></i></button-->
-						<!--a href="< ?= url("/cliente/consultapdf/{$client->id}") ?>" class="btn btn-outline-info" data-toggle="tooltip" data-placement="top" title="GERAR PDF"-->
-							</a>
-					  
-					  <i onclick="window.open('<?= url("/cliente/consultapdf/{$client->id}") ?>','_blank')" class='fas fa-file-pdf fa-x3' style='font-size:35px;color:#755553;cursor:pointer' data-toggle="tooltip" data-placement="top" title="GERAR PDF"></i>
-					  
-					  
-					</td>
-				</tr>
-			  </tbody>
-			</table>
-<!-- FIM MEXI AQUI -->			
-			
             <div class="col-md-12">
-                
-				
+                <div class="card card-outline p-3 mt-3">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <div style="float: left; padding: 0px 0px 0px 10px;margin:0px 0px 0px 10px;">
+
+                                            <!--button class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="GERAR PDF"><i class="far fa-file-pdf"></i></button-->
+                                            <a href="<?= url("/cliente/consultapdf/{$client->id}") ?>" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="GERAR PDF"><i class="far fa-file-pdf"></i></a>
+                                        </div>
+
+                                        <div style="float: left; margin: 0px 10px 0px 0px;">
+                                            <?php if (user()->account()->use_api == 1) : ?>
+                                                <form action="<?= $router->route("filter.filterClientUpdate"); ?>" method="post">
+                                                    <input type="hidden" name="client_id" value="<?= $client->id ?>">
+                                                    <input type="hidden" name="filter_id" value="<?= $filter_id ?>">
+                                                    <input type="hidden" name="search" value="<?= $search ?>">
+                                                    <input type="hidden" name="update" value="data">
+                                                    <input type="hidden" name="url_redirect" value="<?= $_SERVER['REQUEST_URI'] ?>">
+                                                    <?php if ($client_update_value == 0) : ?><button class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="ATUALIZAR DADOS"><i class="fas fa-sync"></i></button><?php endif; ?>
+                                                </form>
+                                            <?php endif; ?>
+                                        </div>
+
+                                    </td>
+                                    <td>
+                                        <?php if ($release_next_customer == 0) : ?>
+                                            <a href="<?= url("/lista-de-trabalho/cliente/{$filter_id}/next") ?>" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="PRÓXIMO CLIENTE"><i class="fas fa-forward"></i></a>
+                                            <?php else :
+                                            if ($count_attendance > 0) : ?>
+                                                <a href="<?= url("/lista-de-trabalho/cliente/{$filter_id}/next") ?>" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="PRÓXIMO CLIENTE"><i class="fas fa-forward"></i></a>
+                                            <?php else : ?>
+                                                <button class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" disabled title="PRÓXIMO CLIENTE"><i class="fas fa-forward"></i></button>
+                                        <?php endif;
+                                        endif;
+                                        ?>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!--/div>
+                        <div class="col-md-3">
+                            <form action="< ?= $router->route("filter.filterClientUpdate"); ?>" method="post">
+                                <input type="hidden" name="client_id" value="< ?= $client->id ?>">
+                                <input type="hidden" name="filter_id" value="< ?= $filter_id ?>">
+                                <input type="hidden" name="search" value="< ?= $search ?>">
+                                <input type="hidden" name="update" value="data">
+                                <input type="hidden" name="url_redirect" value="< ?= $_SERVER['REQUEST_URI'] ?>">
+                                <button class="btn btn-primary btn-sm"><i class="fas fa-redo"> Atualizar Dados</i></button>
+                            </form>
+                        </div>
+                        <div class="col-md-4">
+                            < ?php if ($release_next_customer == 0) : ?>
+                                <a href="< ?= url("/lista-de-trabalho/cliente/{$filter_id}/" . $order) ?>" class="btn btn-primary btn-sm"><i class="fas fa-play"> Próximo Cliente</i></a>
+                            < ?php else : ?>
+                                <button class="btn btn-primary btn-sm" disabled><i class="fas fa-play"> Próximo Cliente</i></button>
+                            < ?php endif; ?>
+							-->
+                        </div>
+                    </div>
+                </div>
                 <div class="card card-outline">
                     <div class="card-header">
                         <b>
                             <h4><?= "{$client->organDesc()->organ} - <span style='color:blue'>{$client->NOME}" ?></span></h4>
                         </b>
-                    </div>				
-				
+                    </div>
                     <div class="card-body pad">
                         <div class="row">
                             <div class="col-md-12">
@@ -161,19 +164,15 @@
                                                                 endif; ?></span>
                                 </span>
                             </div>
-						</div>
-						<hr class="style-one">
-							
-                        <div class="row">
-							<div class="col-md-3">
-								<label>Matrícula:</label><br>
-								<span style="color:blue;"><?= $client->MATRICULA ?></span>
-							</div>
+                            <div class="col-md-3">
+                                <label>Matrícula:</label><br>
+                                <span style="color:blue"><?= $client->MATRICULA ?></span>
+                            </div>
                             <div class="col-md-3">
                                 <label>CPF:</label><br>
                                 <span style="color:blue"><?= mask(cpfZeros($client->CPF), "###.###.###-##") ?></span>
                             </div>
-							<?php if ($client_update_value == 0) : ?>
+                            <?php if ($client_update_value == 0) : ?>
                                 <div class="col-md-3">
                                     <label>Nascimento:</label><br>
                                     <span style="color:blue"><?= date_fmt2($client->NASCIMENTO) ?>(<?= return_age($client->NASCIMENTO) ?> Anos)</span>
@@ -185,18 +184,11 @@
                                     <label>Nascimento:</label><br>
                                     <span style="color:blue"><?= date_fmt2($client_update->nascimento) ?>(<?= return_age($client_update->nascimento) ?> Anos)</span>
                                 </div>
-                            <?php endif; ?>							
-
-							<div class="col-md-3">
+                            <?php endif; ?>
+                            <div class="col-md-3">
                                 <label>RJUR:</label><br>
                                 <span style="color:blue"><?= $client->RUUR ?></span>
                             </div>
-						</div>
-						
-					<hr class="style-three">
-
-					<div class="row">
-
                             <div class="col-md-3">
                                 <label>Nome:</label><br>
                                 <span style="color:blue"><?= $client->NOME ?></span>
@@ -213,12 +205,6 @@
                                 <label>Patente:</label><br>
                                 <span style="color:blue"><?= $client->PATENTE ?></span>
                             </div>
-						</div>
-						
-						<hr class="style-three">
-				
-						<div class="row">
-                            
                             <div class="col-md-3">
                                 <label>Banco:</label><br>
                                 <span style="color:blue"><?php if ($client->BANCO != 0) : echo $client->clientBank()->bank;
@@ -232,11 +218,6 @@
                                 <label>Conta:</label><br>
                                 <span style="color:blue"><?= $client->CONTA ?></span>
                             </div>
-						</div>
-						
-						<hr class="style-three">
-							
-						<div class="row">
                             <?php if ($client_update_value == 0) : ?>
                                 <div class="col-md-12">
                                     <label>Endereço:</label><br>
@@ -276,10 +257,6 @@
                         </div>
                     </div>
                 </div>
-			<hr class="style-one">
-			<br>
-
-
                 <div class="card card-outline tab-content p-3" id="nav-tabContent">
 
                     <nav class="w-100">
@@ -290,6 +267,28 @@
                         </div>
                     </nav>
                     <div class="tab-pane fade show active" id="data" role="tabpanel" aria-labelledby="data-tab">
+                        <?php if (count($bank_coeficients) != 0) : ?>
+                            <div class="row pt-5 pb-3">
+                                <div class="col-4">
+                                </div>
+                                <div class="col-3">
+                                    <select class="form-control" style="width: 100%;" id="bank_coeficient">
+                                        <option value="">--Selecione--</option>
+                                        <?php foreach ($bank_coeficients as $bank_coeficient) : ?>
+                                            <option value="<?= $bank_coeficient->id ?>"><?= $bank_coeficient->bank ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <div class="col-3">
+                                    <select class="form-control" style="width: 100%;" id="coeficient" name="coeficient">
+                                        <option>Selecione</option>
+                                    </select>
+                                </div>
+                                <div class="col-2">
+                                    <input typ="text" class="form-control coefficient" name="coeficient_value" id="coeficient_value" />
+                                </div>
+                            </div>
+                        <?php endif; ?>
                         <div class="row">
                             <table id="escalation" class="table table-striped">
                                 <thead>
@@ -327,7 +326,7 @@
                                                     <td></td>
                                                 <?php endif; ?>
                                                 <?php if ($each_contract->VALOR != "") : ?>
-                                                    <td><input class="txt_numero" typ="text" id="parcela_<?= $i ?>" onblur="calcula_valor_total(<?= $i ?>)" <?php if ($each_contract->PRAZO != "") : ?> value=<?= calculaDiffDate($each_contract->PRAZO); ?> <?php endif; ?> /></td>
+                                                    <td><input class="txt_numero" type="text" id="parcela_<?= $i ?>" onblur="calcula_valor_total(<?= $i ?>,<?= $each_contract->VALOR; ?>)" <?php if ($each_contract->PRAZO != "") : ?> value=<?= calculaDiffDate($each_contract->PRAZO); ?> <?php endif; ?> /></td>
                                                     <td><input type="hidden" id="valor_total_input_<?= $i ?>" value="<?= str_price($each_contract->VALOR) ?>"><label id="valor_todal_<?= $i ?>"><?php if ($each_contract->PRAZO != "") : ?> <?= "R$ " . str_price(calculaDiffDate($each_contract->PRAZO) * $each_contract->VALOR); ?> <?php endif; ?></label></td>
                                                     <td><input typ="text" name="saldo_aproximado" /></td>
                                                     <td><?= $client->coefficient ?></td>
@@ -345,13 +344,9 @@
                                 </tbody>
                             </table>
                         </div>
-				<hr class="style-three">	
                     </div>
-					
-					
                     <div class="tab-pane fade" id="descont" role="tabpanel" aria-labelledby="descont-tab">
                         <div class="row">
-							
                             <?php if (count($client_contract_others) != 0) : ?>
                                 <table id="escalation2" class="table table-striped">
                                     <thead>
@@ -384,14 +379,9 @@
                                         </tr>
                                     </tfoot>
                                 </table>
-							
-						<hr class="style-three">	
-
                             <?php endif; ?>
                         </div>
                     </div>
-					
-					
                     <div class="tab-pane fade" id="inss" role="tabpanel" aria-labelledby="inss-tab">
                         <div class="row">
                             <?php if (isset($client_benefit)) : ?>
@@ -478,75 +468,45 @@
                             <?php endif; ?>
                             <?php if (!isset($client_benefit) && !isset($client_loan)) : ?>
                                 <br>
-                                <!--div class="col-md-5"></div-->
-                                <div class="col-md-7 text-danger">
-									<span style="margin:10px 0px 0px 0px; padding: 10px 0px 0px 10px;text-transform: uppercase;font-weight: bold;">Nenhum Benefício encontrado</span>
-							     </div>
-                                <br>&nbsp;<br>
+                                <div class="col-md-5"></div>
+                                <div class="col-md-7 text-danger"><b>Nenhum Benefício encontrado</b></div>
+                                <br>
                             <?php endif; ?>
                         </div>
-						
-						
-                        <?php if(user()->account_id!=66): ?>
-                        <div class="row" style="margin: 0px 0px 0px 10px;">
-                            <!--div class="col-md-5"></div>
-                            <div class="col-md-3"-->
-                                <form action="<?= $router->route("filter.filterClientUpdate"); ?>" method="post">
-                                    <input type="hidden" name="client_id" value="<?= $client->id ?>">
-                                    <input type="hidden" name="filter_id" value="<?= $filter_id ?>">
-                                    <input type="hidden" name="update" value="inss">
-                                    <input type="hidden" name="search" value="<?= $search ?>">
-                                    <input type="hidden" name="url_redirect" value="<?= $_SERVER['REQUEST_URI'] ?>">
-                                    <button class="btn btn-primary" <?php if (isset($client_benefit) || isset($client_loan)) : ?> disabled <?php endif; ?>><i class="fas fa-redo"></i>&nbsp;Atualizar INSS</button>
-                                </form>
-                            <!--/div-->
-                        <!--/div-->
-							&nbsp;&nbsp;
-                        <?php endif;?>
+                        <?php if (user()->account_id != 66) : ?>
+                            <div class="row">
+                                <div class="col-md-5"></div>
+                                <div class="col-md-3">
+                                    <form action="<?= $router->route("filter.filterClientUpdate"); ?>" method="post">
+                                        <input type="hidden" name="client_id" value="<?= $client->id ?>">
+                                        <input type="hidden" name="filter_id" value="<?= $filter_id ?>">
+                                        <input type="hidden" name="update" value="inss">
+                                        <input type="hidden" name="search" value="<?= $search ?>">
+                                        <input type="hidden" name="url_redirect" value="<?= $_SERVER['REQUEST_URI'] ?>">
+                                        <button class="btn btn-primary" <?php if (isset($client_benefit) || isset($client_loan)) : ?> disabled <?php endif; ?>><i class="fas fa-redo"> Atualizar INSS</i></button>
+                                    </form>
+                                </div>
+                            </div>
+                        <?php endif; ?>
                     </div>
-			<hr class="style-three">	
                 </div>
-					
-			<hr class="style-one">	
-					<br>
                 <div class="card card-outline tab-content p-3" id="nav-tabContent">
                     <nav class="w-100">
                         <div class="nav nav-tabs" id="product-tab" role="tablist">
                             <a class="nav-item nav-link active" id="tel-tab" data-toggle="tab" href="#tel" role="tab" aria-controls="tel" aria-selected="true">Telefone</a>
                             <a class="nav-item nav-link" id="email-tab" data-toggle="tab" href="#email" role="tab" aria-controls="email" aria-selected="true">E-mail</a>
-							
-							<span style="margin: 0px 0px 0px 50px;">
-											<?php if (user()->account()->use_api == 1) : ?>
-												
-													<form action="<?= $router->route("filter.filterClientUpdate"); ?>" method="post">
-														<input type="hidden" name="client_id" value="<?= $client->id ?>">
-														<input type="hidden" name="filter_id" value="<?= $filter_id ?>">
-														<input type="hidden" name="search" value="<?= $search ?>">
-														<input type="hidden" name="update" value="data">
-														<input type="hidden" name="url_redirect" value="<?= $_SERVER['REQUEST_URI'] ?>">
-														&nbsp;
-														<button class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="ATUALIZAR DADOS">
-															<i class="fas fa-sync"></i>
-														</button>
-													</form>
-												<?php endif; ?>
-							</span>
-
-							
-							
                         </div>
-                    </nav>
+                    </nav><br>
                     <div class="tab-pane fade show active" id="tel" role="tabpanel" aria-labelledby="tel-tab">
                         <div class="row">
-                            <table class="tdHover"  cellpadding="5">
-								<thead>
+                            <table class="tdHover">
+                                <thead>
                                     <tr>
-										<th width="90px" data-toggle="tooltip" data-placement="top" title="Clique no ícone abaixo para copiar o número" align="center">&nbsp;&nbsp;&nbsp;&nbsp;Copiar</th>
                                         <th>Telefones</th>
-                                        <!--th>Ações</th-->
+                                        <th>Ações</th>
                                     </tr>
-                                </thead>                                
-								<tbody>
+                                </thead>
+                                <tbody>
 
                                     <?php if ($client_update_value == 0) : ?>
                                         <?php $i = 0;
@@ -554,62 +514,51 @@
                                         if ($client->TELEFONE_01 != "") : ?>
                                             <?php if ($client->TELEFONE_01 != "0") : $i = 1; ?>
                                                 <tr>
-                                                    <td align="center">
-														&nbsp;
-														<input type="hidden" id="phone1" value="<?= returnPhone($client->TELEFONE_01) ?>">
+                                                    <td><span style="color:blue;cursor:pointer" class="copy-paste-phone" data-order="1"><?= returnPhone($client->TELEFONE_01) ?></span></td>
+                                                    <td>
+                                                        <a href="https://api.whatsapp.com/send?phone=55<?= $client->TELEFONE_01; ?>" target="blank" style="font-size: 25px;" class="fab fa-whatsapp-square" data-toggle="tooltip" data-placement="top" title="ABRIR WHATSAPP"></a>
+                                                        &nbsp;
+                                                        <input type="hidden" id="phone1" value="<?= returnPhone($client->TELEFONE_01) ?>">
                                                         <i class="far fa-copy copy-phone" style="cursor:pointer" data-order="1" data-value="<?= returnPhone($client->TELEFONE_01); ?>" data-toggle="tooltip" data-placement="top" title="Copiar Telefone"></i>
-													</td>
-													
-													<td style='cursor:pointer' onclick=" window.open('https://api.whatsapp.com/send?phone=55<?= $client_update->telefone_01; ?>','_blank')" data-toggle="tooltip" data-placement="top" title="ABRIR WHATSAPP">
-													<span style="color:blue;" class="copy-paste-phone" data-order="1"><?= returnPhone($client->TELEFONE_01) ?></span>
-														<i class="fab fa-whatsapp-square fa-2x" style="margin-left: 25px"></i>  
-													</td>													
-
+                                                    </td>
                                                 </tr>
                                         <?php endif;
                                         endif; ?>
                                         <?php if ($client->TELEFONE_02 != "") : ?>
                                             <?php if ($client->TELEFONE_02 != "0") : $i = 2; ?>
                                                 <tr>
-													<td align="center">
-														
-													 <input type="hidden" id="phone2" value="<?= returnPhone($client->TELEFONE_02) ?>">
-                                                        <i class="far fa-copy copy-phone" style="cursor:pointer" data-order="2" data-value="<?= returnPhone($client->TELEFONE_02); ?>" data-toggle="tooltip" data-placement="top" title="Copiar Telefone"></i>
+                                                    <td><span style="color:blue;cursor:pointer" class="copy-paste-phone" data-order="2"><?= returnPhone($client->TELEFONE_02) ?></span></td>
                                                     <td>
-													<td style='cursor:pointer' onclick=" window.open('https://api.whatsapp.com/send?phone=55<?= $client_update->telefone_01; ?>','_blank')" data-toggle="tooltip" data-placement="top" title="ABRIR WHATSAPP">
-													<span style="color:blue;" class="copy-paste-phone" data-order="1"><?= returnPhone($client->TELEFONE_02) ?></span>
-														<i class="fab fa-whatsapp-square fa-2x" style="margin-left: 25px"></i>  
-													</td>	                                                    
+                                                        <a href="https://api.whatsapp.com/send?phone=55<?= $client->TELEFONE_02; ?>" target="blank" class="fab fa-whatsapp-square" data-toggle="tooltip" data-placement="top" title="ABRIR WHATSAPP"></a>
+                                                        &nbsp;
+                                                        <input type="hidden" id="phone2" value="<?= returnPhone($client->TELEFONE_02) ?>">
+                                                        <i class="far fa-copy copy-phone" style="cursor:pointer" data-order="2" data-value="<?= returnPhone($client->TELEFONE_02); ?>" data-toggle="tooltip" data-placement="top" title="Copiar Telefone"></i>
+                                                    </td>
                                                 </tr>
                                         <?php endif;
                                         endif; ?>
                                         <?php if ($client->TELEFONE_03 != "") : ?>
                                             <?php if ($client->TELEFONE_03 != "0") : $i = 3; ?>
-												<tr>
-													<td>
+                                                <tr>
+                                                    <td><span style="color:blue;cursor:pointer" class="copy-paste-phone" data-order="3"><?= returnPhone($client->TELEFONE_03) ?></span></td>
+                                                    <td>
+                                                        <a href="https://api.whatsapp.com/send?phone=55<?= $client->TELEFONE_03; ?>" target="blank" class="fab fa-whatsapp-square" data-toggle="tooltip" data-placement="top" title="ABRIR WHATSAPP"></a>
                                                         &nbsp;
                                                         <input type="hidden" id="phone3" value="<?= returnPhone($client->TELEFONE_03) ?>">
                                                         <i class="far fa-copy copy-phone" style="cursor:pointer" data-order="3" data-value="<?= returnPhone($client->TELEFONE_03); ?>" data-toggle="tooltip" data-placement="top" title="Copiar Telefone"></i>
-													</td>
-													<td style='cursor:pointer' onclick=" window.open('https://api.whatsapp.com/send?phone=55<?= $client_update->telefone_01; ?>','_blank')" data-toggle="tooltip" data-placement="top" title="ABRIR WHATSAPP">
-													<span style="color:blue;" class="copy-paste-phone" data-order="1"><?= returnPhone($client->TELEFONE_03) ?></span>
-														<i class="fab fa-whatsapp-square fa-2x" style="margin-left: 25px"></i>  
-													</td>
+                                                    </td>
                                                 </tr>
                                         <?php endif;
                                         endif; ?>
                                         <?php if ($client->TELEFONE_04 != "") : ?>
                                             <?php if ($client->TELEFONE_04 != "0") : $i = 4; ?>
-                                                <<tr>
-                                                    <td align="center">
+                                                <tr>
+                                                    <td><span style="color:blue;cursor:pointer" class="copy-paste-phone" data-order="4"><?= returnPhone($client->TELEFONE_04) ?></span></td>
+                                                    <td>
+                                                        <a href="https://api.whatsapp.com/send?phone=55<?= $client->TELEFONE_04; ?>" target="blank" class="fab fa-whatsapp-square" data-toggle="tooltip" data-placement="top" title="ABRIR WHATSAPP"></a>
                                                         &nbsp;
                                                         <input type="hidden" id="phone4" value="<?= returnPhone($client->TELEFONE_04) ?>">
                                                         <i class="far fa-copy copy-phone" style="cursor:pointer" data-order="4" data-value="<?= returnPhone($client->TELEFONE_04); ?>" data-toggle="tooltip" data-placement="top" title="Copiar Telefone"></i>
-													</td>
-													<td style='cursor:pointer' onclick=" window.open('https://api.whatsapp.com/send?phone=55<?= $client_update->telefone_01; ?>','_blank')" data-toggle="tooltip" data-placement="top" title="ABRIR WHATSAPP">
-													<span style="color:blue;" class="copy-paste-phone" data-order="1"><?= returnPhone($client->TELEFONE_04) ?></span>
-														<i class="fab fa-whatsapp-square fa-2x" style="margin-left: 25px"></i>  
-													</td>
                                                     </td>
                                                 </tr>
                                         <?php endif;
@@ -617,30 +566,26 @@
                                         <?php if ($client->TELEFONE_05 != "") : ?>
                                             <?php if ($client->TELEFONE_05 != "0") : $i = 5; ?>
                                                 <tr>
+                                                    <td><span style="color:blue;cursor:pointer" class="copy-paste-phone" data-order="5"><?= returnPhone($client->TELEFONE_05) ?></span></td>
                                                     <td>
+                                                        <a href="https://api.whatsapp.com/send?phone=55<?= $client->TELEFONE_05; ?>" target="blank" class="fab fa-whatsapp-square" data-toggle="tooltip" data-placement="top" title="ABRIR WHATSAPP"></a>
                                                         &nbsp;
                                                         <input type="hidden" id="phone5" value="<?= returnPhone($client->TELEFONE_05) ?>">
                                                         <i class="far fa-copy copy-phone" style="cursor:pointer" data-order="5" data-value="<?= returnPhone($client->TELEFONE_05); ?>" data-toggle="tooltip" data-placement="top" title="Copiar Telefone"></i>
-													</td>
-													<td style='cursor:pointer' onclick=" window.open('https://api.whatsapp.com/send?phone=55<?= $client_update->telefone_01; ?>','_blank')" data-toggle="tooltip" data-placement="top" title="ABRIR WHATSAPP">
-													<span style="color:blue;" class="copy-paste-phone" data-order="1"><?= returnPhone($client->TELEFONE_05) ?></span>
-														<i class="fab fa-whatsapp-square fa-2x" style="margin-left: 25px"></i>  
-													</td>
+                                                    </td>
                                                 </tr>
                                         <?php endif;
                                         endif; ?>
                                         <?php if ($client->TELEFONE_06 != "") : ?>
                                             <?php if ($client->TELEFONE_06 != "0") : $i = 6; ?>
                                                 <tr>
-                                                    <td align="center">
-                                                        
+                                                    <td><span style="color:blue;cursor:pointer" class="copy-paste-phone" data-order="6"><?= returnPhone($client->TELEFONE_06) ?></span></td>
+                                                    <td>
+                                                        <a href="https://api.whatsapp.com/send?phone=55<?= $client->TELEFONE_06; ?>" target="blank" class="fab fa-whatsapp-square" data-toggle="tooltip" data-placement="top" title="ABRIR WHATSAPP"></a>
+                                                        &nbsp;
                                                         <input type="hidden" id="phone6" value="<?= returnPhone($client->TELEFONE_06) ?>">
                                                         <i class="far fa-copy copy-phone" style="cursor:pointer" data-order="6" data-value="<?= returnPhone($client->TELEFONE_06); ?>" data-toggle="tooltip" data-placement="top" title="Copiar Telefone"></i>
-													</td>
-													<td style='cursor:pointer' onclick=" window.open('https://api.whatsapp.com/send?phone=55<?= $client_update->telefone_01; ?>','_blank')" data-toggle="tooltip" data-placement="top" title="ABRIR WHATSAPP">
-													<span style="color:blue;" class="copy-paste-phone" data-order="1"><?= returnPhone($client->TELEFONE_06) ?></span>
-														<i class="fab fa-whatsapp-square fa-2x" style="margin-left: 25px"></i> 
-													</td>
+                                                    </td>
                                                 </tr>
                                         <?php endif;
                                         endif; ?>
@@ -652,99 +597,78 @@
                                         if ($client_update->telefone_01 != "") : ?>
                                             <?php if ($client->telefone_01 != "0") : $i = 1; ?>
                                                 <tr>
-                                                    <td align="center">
-														<input type="hidden" id="phone1" value="<?= returnPhone($client_update->telefone_01) ?>">
-															<i class="far fa-copy copy-phone" style="cursor:pointer" data-order="1" data-value="<?= returnPhone($client_update->telefone_01); ?>" data-toggle="tooltip" data-placement="top" title="Copiar Telefone"></i>
-													</td>
-                                                    <td style='cursor:pointer' onclick=" window.open('https://api.whatsapp.com/send?phone=55<?= $client_update->telefone_01; ?>','_blank')" data-toggle="tooltip" data-placement="top" title="ABRIR WHATSAPP"> 
-														
-														<span style="color:blue;" class="copy-paste-phone" data-order="1"><?= returnPhone($client_update->telefone_01) ?></span>
-														
-														
-														<i class="fab fa-whatsapp-square fa-2x" style="margin-left: 25px"></i> 
-													</td>
+                                                    <td><span style="color:blue;cursor:pointer" class="copy-paste-phone" data-order="1"><?= returnPhone($client_update->telefone_01) ?></span></td>
+                                                    <td>
+                                                        <a href="https://api.whatsapp.com/send?phone=55<?= $client_update->telefone_01; ?>" target="blank" class="fab fa-whatsapp-square" data-toggle="tooltip" data-placement="top" title="ABRIR WHATSAPP"></a>
+                                                        &nbsp;
+                                                        <input type="hidden" id="phone1" value="<?= returnPhone($client_update->telefone_01) ?>">
+                                                        <i class="far fa-copy copy-phone" style="cursor:pointer" data-order="1" data-value="<?= returnPhone($client_update->telefone_01); ?>" data-toggle="tooltip" data-placement="top" title="Copiar Telefone"></i>
+                                                    </td>
                                                 </tr>
                                         <?php endif;
                                         endif; ?>
                                         <?php if ($client_update->telefone_02 != "") : ?>
                                             <?php if ($client_update->telefone_02 != "0") : $i = 2; ?>
                                                 <tr>
-                                                    <td align="center">
+                                                    <td><span style="color:blue;cursor:pointer" class="copy-paste-phone" data-order="2"><?= returnPhone($client_update->telefone_02) ?></span></td>
+                                                    <td>
+                                                        <a href="https://api.whatsapp.com/send?phone=55<?= $client_update->telefone_02; ?>" target="blank" class="fab fa-whatsapp-square" data-toggle="tooltip" data-placement="top" title="ABRIR WHATSAPP"></a>
+                                                        &nbsp;
                                                         <input type="hidden" id="phone2" value="<?= returnPhone($client_update->telefone_02) ?>">
                                                         <i class="far fa-copy copy-phone" style="cursor:pointer" data-order="2" data-value="<?= returnPhone($client_update->telefone_02); ?>" data-toggle="tooltip" data-placement="top" title="Copiar Telefone"></i>
-													</td>
-                                                    <td style='cursor:pointer' onclick=" window.open('https://api.whatsapp.com/send?phone=55<?= $client_update->telefone_02; ?>','_blank')" data-toggle="tooltip" data-placement="top" title="ABRIR WHATSAPP">
-														
-														<span style="color:blue;" class="copy-paste-phone" data-order="1"><?= returnPhone($client_update->telefone_02) ?></span>
-														<i class="fab fa-whatsapp-square fa-2x" style="margin-left: 25px"></i> 
-													</td>
+                                                    </td>
                                                 </tr>
                                         <?php endif;
                                         endif; ?>
                                         <?php if ($client_update->telefone_03 != "") : ?>
                                             <?php if ($client_update->telefone_03 != "0") : $i = 3; ?>
                                                 <tr>
-                                                    <td>&nbsp;
-													<input type="hidden" id="phone3" value="<?= returnPhone($client_update->telefone_03) ?>">
+                                                    <td><span style="color:blue;cursor:pointer" class="copy-paste-phone" data-order="3"><?= returnPhone($client_update->telefone_03) ?></span></td>
+                                                    <td>
+                                                        <a href="https://api.whatsapp.com/send?phone=55<?= $client_update->telefone_03; ?>" target="blank" class="fab fa-whatsapp-square"></a>
+                                                        &nbsp;
+                                                        <input type="hidden" id="phone3" value="<?= returnPhone($client_update->telefone_03) ?>">
                                                         <i class="far fa-copy copy-phone" style="cursor:pointer" data-order="3" data-value="<?= returnPhone($client_update->telefone_03); ?>" data-toggle="tooltip" data-placement="top" title="Copiar Telefone"></i>
-													</td>
-
-													<td style='cursor:pointer' onclick=" window.open('https://api.whatsapp.com/send?phone=55<?= $client_update->telefone_03; ?>','_blank')" data-toggle="tooltip" data-placement="top" title="ABRIR WHATSAPP">
-														
-														<span style="color:blue;" class="copy-paste-phone" data-order="1"><?= returnPhone($client_update->telefone_03) ?></span>
-														<i class="fab fa-whatsapp-square fa-2x" style="margin-left: 25px"></i> 
-													</td>
-													
+                                                    </td>
                                                 </tr>
                                         <?php endif;
                                         endif; ?>
                                         <?php if ($client_update->telefone_04 != "") : ?>
                                             <?php if ($client_update->telefone_04 != "0") : $i = 4; ?>
                                                 <tr>
+                                                    <td><span style="color:blue;cursor:pointer" class="copy-paste-phone" data-order="4"><?= returnPhone($client_update->telefone_04) ?></span></td>
                                                     <td>
-														&nbsp;
+                                                        <a href="https://api.whatsapp.com/send?phone=55<?= $client_update->telefone_04; ?>" target="blank" class="fab fa-whatsapp-square" data-toggle="tooltip" data-placement="top" title="ABRIR WHATSAPP"></a>
+                                                        &nbsp;
                                                         <input type="hidden" id="phone4" value="<?= returnPhone($client_update->telefone_04) ?>">
                                                         <i class="far fa-copy copy-phone" style="cursor:pointer" data-order="4" data-value="<?= returnPhone($client_update->telefone_04); ?>" data-toggle="tooltip" data-placement="top" title="Copiar Telefone"></i>
-													</td>
-													
-													<td style='cursor:pointer' onclick=" window.open('https://api.whatsapp.com/send?phone=55<?= $client_update->telefone_04; ?>','_blank')" data-toggle="tooltip" data-placement="top" title="ABRIR WHATSAPP">
-														
-														<span style="color:blue;" class="copy-paste-phone" data-order="1"><?= returnPhone($client_update->telefone_04) ?></span>
-														<i class="fab fa-whatsapp-square fa-2x" style="margin-left: 25px"></i> 
-													</td>
-													
+                                                    </td>
                                                 </tr>
                                         <?php endif;
                                         endif; ?>
                                         <?php if ($client_update->telefone_05 != "") : ?>
                                             <?php if ($client_update->telefone_05 != "0") : $i = 5; ?>
                                                 <tr>
+                                                    <td><span style="color:blue;cursor:pointer" class="copy-paste-phone" data-order="5"><?= returnPhone($client_update->telefone_05) ?></span></td>
                                                     <td>
+                                                        <a href="https://api.whatsapp.com/send?phone=55<?= $client_update->telefone_05; ?>" target="blank" class="fab fa-whatsapp-square" data-toggle="tooltip" data-placement="top" title="ABRIR WHATSAPP"></a>
                                                         &nbsp;
-                                                        <input type="hidden" id="phone6" value="<?= returnPhone($client_update->telefone_06) ?>">
-                                                        <i class="far fa-copy copy-phone" style="cursor:pointer" data-order="6" data-value="<?= returnPhone($client_update->telefone_06); ?>" data-toggle="tooltip" data-placement="top" title="Copiar Telefone"></i>
-													</td>
-                                                    <td style='cursor:pointer' onclick=" window.open('https://api.whatsapp.com/send?phone=55<?= $client_update->telefone_06; ?>','_blank')" data-toggle="tooltip" data-placement="top" title="ABRIR WHATSAPP">
-														
-														<span style="color:blue;" class="copy-paste-phone" data-order="1"><?= returnPhone($client_update->telefone_06) ?></span>
-														<i class="fab fa-whatsapp-square fa-2x" style="margin-left: 25px"></i> 
-													</td>
+                                                        <input type="hidden" id="phone5" value="<?= returnPhone($client_update->telefone_05) ?>">
+                                                        <i class="far fa-copy copy-phone" style="cursor:pointer" data-order="5" data-value="<?= returnPhone($client_update->telefone_05); ?>" data-toggle="tooltip" data-placement="top" title="Copiar Telefone"></i>
+                                                    </td>
                                                 </tr>
                                         <?php endif;
                                         endif; ?>
                                         <?php if ($client_update->telefone_06 != "") : ?>
                                             <?php if ($client_update->telefone_06 != "0") : $i = 6; ?>
                                                 <tr>
+                                                    <td><span style="color:blue;cursor:pointer" class="copy-paste-phone" data-order="6"><?= returnPhone($client_update->telefone_06) ?></span></td>
                                                     <td>
+                                                        <a href="https://api.whatsapp.com/send?phone=55<?= $client_update->telefone_06; ?>" target="blank" class="fab fa-whatsapp-square" data-toggle="tooltip" data-placement="top" title="ABRIR WHATSAPP"></a>
                                                         &nbsp;
                                                         <input type="hidden" id="phone6" value="<?= returnPhone($client_update->telefone_06) ?>">
                                                         <i class="far fa-copy copy-phone" style="cursor:pointer" data-order="6" data-value="<?= returnPhone($client_update->telefone_06); ?>" data-toggle="tooltip" data-placement="top" title="Copiar Telefone"></i>
-													</td>
-                                                    <td style='cursor:pointer' onclick=" window.open('https://api.whatsapp.com/send?phone=55<?= $client_update->telefone_06; ?>','_blank')" data-toggle="tooltip" data-placement="top" title="ABRIR WHATSAPP">
-														
-														<span style="color:blue;" class="copy-paste-phone" data-order="1"><?= returnPhone($client_update->telefone_06) ?></span>
-														<i class="fab fa-whatsapp-square fa-2x" style="margin-left: 25px"></i> 
-													</td>
+                                                    </td>
                                                 </tr>
                                         <?php endif;
                                         endif; ?>
@@ -756,12 +680,10 @@
                         </div>
 
                     </div>
-
-
                     <div class="tab-pane fade" id="email" role="tabpanel" aria-labelledby="email-tab">
                         <div class="row">
-                            <table class="tdHover">
-								<thead>
+                            <table class="table">
+                                <thead>
                                     <tr>
                                         <th>E-mail</th>
                                     </tr>
@@ -780,17 +702,25 @@
                             </table>
                         </div>
                     </div>
-                    
+                    <?php if (user()->account()->use_api == 1) : ?>
+                        <br>
+                        <div align="center">
+                            <form action="<?= $router->route("filter.filterClientUpdate"); ?>" method="post">
+                                <input type="hidden" name="client_id" value="<?= $client->id ?>">
+                                <input type="hidden" name="filter_id" value="<?= $filter_id ?>">
+                                <input type="hidden" name="search" value="<?= $search ?>">
+                                <input type="hidden" name="update" value="data">
+                                <input type="hidden" name="url_redirect" value="<?= $_SERVER['REQUEST_URI'] ?>">
+                                <?php if ($client_update_value == 0) : ?><button class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="ATUALIZAR DADOS"><i class="fas fa-sync"></i></button><?php endif; ?>
+                            </form>
+                        </div>
+                    <?php endif; ?>
                 </div>
-		
-			<hr class="style-one">	
-					<br>
-
                 <form action="<?= $router->route("filter.clientAttendance"); ?>" method="post">
                     <input type="hidden" name="url_redirect" value="<?= $_SERVER['REQUEST_URI'] ?>">
                     <div class="card card-outline">
                         <div class="card-header">
-                            <h4>ATENDIMENTOS</h4>
+                            <h4>ATENDIMENTOS</b>
                         </div>
                         <input type="hidden" name="client_id" value="<?= $client->id ?>">
                         <input type="hidden" name="filter_id" value="<?= $filter_id ?>">
@@ -849,18 +779,12 @@
                     <?php if ($blocked_client == 0) : ?>
                         <hr>
                         <div class="">
-                            <button class="btn btn-success"><i class="fas fa-phone"></i> Registrar Atendimento</button>
+                            <button class="btn btn-success"><i class="fas fa-phone"> Registrar Atendimento</i></button>
                         </div><!-- /.card-footer -->
                     <?php endif; ?>
                 </form>
-
-			<hr class="style-one">	
-					<br>
-
-		
-				<div class="card-header">
-					<h4>ATENDIMENTOS FEITOS</h4>
-				</div>
+                <br>
+                ATENDIMENTOS FEITOS
                 <?php
                 if ($attendance) : ?>
                     <table id="example3" class="display">
@@ -891,13 +815,10 @@
                     </table><br>
                 <?php else : ?>
                     <div class="row">
-						
-                            
-				<button class="btn btn-warning"><i class="fas fa-info"></i>&nbsp;&nbsp;Nenhum atendimento registrado para esse cliente</button>
-                    </div>
-		
-			<hr class="style-one">	
-					<br>
+                        <div class="col-sm-12 fas fa-info text-danger " align="center">
+                            Nenhum atendimento registrado para esse cliente
+                        </div>
+                    </div><br>
                 <?php endif; ?>
                 <br>
             </div>
@@ -968,15 +889,11 @@
             </div>
         </div>
     </form>
-		<div class="row">
-			<div class="col-sm-12 text-center pt-5">
-				<p id="resultado"></p>
-			</div>
-		</div>
-			
-
-        
-    
+    <div class="row">
+        <div class="col-sm-12 text-center pt-5">
+            <p id="resultado"></p>
+        </div>
+    </div>
 </div>
 <!-- /.content-wrapper -->
 <?php $v->start("scripts"); ?>
@@ -1049,7 +966,7 @@
 
 <script>
     $(document).ready(function() {
-        $("#btnOpenCalcFin").bind('click', function(){
+        $("#btnOpenCalcFin").bind('click', function() {
             $(".ui-calc-financ").show();
 
             $("#btnOpenCalcFin").hide();
@@ -1066,7 +983,7 @@
         });
 
         $(".ui-calc-financ input").bind('keyup', function(evt) {
-            if(evt.keyCode == 13) {
+            if (evt.keyCode == 13) {
                 $("#btn_calcular").click();
             }
 
@@ -1079,7 +996,7 @@
             $("#resultado").html('');
         });
 
-        $(".ui-calc-financ .close").bind('click', function(){
+        $(".ui-calc-financ .close").bind('click', function() {
             $(".ui-calc-financ").hide();
             $("#btnOpenCalcFin").show();
         });
@@ -1105,13 +1022,13 @@
         $(".copy-phone").click(function() {
             var clicked = $(this);
             var data = clicked.data();
-            
+
             copyById(data.order);
         });
 
         function copyById(id) {
             var inputTest = "";
-            
+
             inputTest = document.getElementById("phone" + id);
             inputTest.type = 'text';
             inputTest.select();
@@ -1133,13 +1050,13 @@
         });
 
         function triggerSIP(phone) {
-            phone = phone.replace(/[^0-9]/g,'');
+            phone = phone.replace(/[^0-9]/g, '');
 
             ['sip'].forEach((protocol) => {
                 var frame = $("<iframe>")
-                .attr("id", "sip-" + phone)
-                .attr("src", protocol + ":" + phone)
-                .hide();
+                    .attr("id", "sip-" + phone)
+                    .attr("src", protocol + ":" + phone)
+                    .hide();
 
                 $('body').append(frame);
 
@@ -1147,6 +1064,54 @@
             });
         }
     });
+
+    function calcula_valor_total(count, valor) {
+        parcela = document.getElementById("parcela_" + count).value;
+        $("#valor_todal_" + count).html((valor * parcela).toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL'
+        }));
+    }
+
+    $("#bank_coeficient").change(function() {
+        resetaCombo('coeficient');
+        $("#coeficient_value").val("");
+        if ($("#bank_coeficient").val() != "") {
+            $.getJSON(path + '/filter/bank-coeficient/select/' + $("#bank_coeficient").val(), function(data) {
+                var option = new Array();
+                $.each(data.coeficient, function(i, obj) {
+                    option[i] = document.createElement('option');
+                    $(option[i]).attr({
+                        value: obj.id
+                    });
+                    $(option[i]).append(obj.description);
+
+                    $("select[name='coeficient']").append(option[i]);
+
+                });
+            })
+        }
+    })
+
+    $("#coeficient").change(function() {
+        $("#coeficient_value").val("");
+        if ($("#coeficient").val() != "") {
+            $.getJSON(path + '/filter/bank-coeficient/value/' + $("#coeficient").val(), function(data) {
+                $.each(data.coeficient_value, function(i, obj) {
+                    $("#coeficient_value").val(obj.coeficient);
+                })
+            })
+        }
+    })
+    function resetaCombo(el) {
+        $("select[name='" + el + "']").empty();
+        var option = document.createElement('option');
+        $(option).attr({
+            value: ''
+        });
+        $(option).append('--Selecione--');
+        $("select[name='" + el + "']").append(option);
+    }
 </script>
 
 <?php $v->end(); ?>
