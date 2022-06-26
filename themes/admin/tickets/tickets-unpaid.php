@@ -43,6 +43,7 @@
                         <th>Vencimento</th>
                         <th>Status</th>
                         <th>Cliente</th>
+                        <th>Boleto</th>
                         <th>Ações</th>  
                     </tr>
                     </thead>
@@ -54,29 +55,15 @@
                             <td><?= date_fmt_br2($ticket->due_date) ?></td>
                             <td><?= $ticket->status ?></td>
                             <td><?= $ticket->description ?></td>
-                            <?php
-                                $ticketToPay = $ticketToPay ?? null; 
-                                if (user()->level_id == 1 && $ticketToPay): 
-                            ?> 
-                                <td>
-                                    <a href="<?= url("/boletos/alterar/{$ticket->id}/cliente/{$ticket->account_id}") ?>" 
+                            <td>
+                                <?php ?> 
                                         class="btn btn-primary">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
                                     <a href="#" 
-                                        class="btn btn-danger" 
-                                        title="Excluir" 
                                         data-post="<?= url("/boletos/remover/{$ticket->id}/cliente/{$ticket->account_id}"); ?>" 
-                                        data-action="delete" 
-                                        data-confirm="ATENÇÃO: Tem certeza que deseja excluir esse boleto? Essa ação não poderá ser desfeita!" 
                                         data-account="<?= $ticket->id; ?>">
-                                            <i class="fas fa-trash"></i>
-                                    </a>
                                 </td>
-                            <?php endif; ?>
-                            
                             <?php
-                                $isUrlBoletoAPagar = url($_SERVER["REQUEST_URI"]) == url('/boletos-a-pagar');
+                                $status = $ticketToPay->status ?? null;
                                 if (user()->level_id == 2 && $isUrlBoletoAPagar && $ticketToPay->status == 'Boleto não pago'): 
                             ?>
                                 <td>
@@ -96,6 +83,7 @@
                     </tbody>
                     <tfoot>
                         <td>Total: <?= count($tickets); ?></td>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td></td>

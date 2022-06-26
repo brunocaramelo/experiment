@@ -1,4 +1,5 @@
 <?php $v->layout("_admin"); ?>
+
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -36,11 +37,11 @@
                             <a class="nav-item nav-link active" id="data-tab" data-toggle="tab" href="#data" role="tab" aria-controls="data" aria-selected="true">Dados do Filtro</a>
                             <a class="nav-item nav-link" id="report-tab" data-toggle="tab" href="#report" role="tab" aria-controls="report" aria-selected="true">Registros</a>
                             <a class="nav-item nav-link" id="attendance-tab" data-toggle="tab" href="#attendance" role="tab" aria-controls="attendance" aria-selected="false">Clientes Atendidos</a>
+                            <a class="nav-item nav-link" id="csv-tab" data-toggle="tab" href="#csv" role="tab" aria-controls="csv" aria-selected="false">Arquivo CSV</a>
                         </div>
                     </nav>
                     <div class="tab-content p-3" id="nav-tabContent">
                         <div class="row">
-                            <div class="col-md-1"></div>
                             <?php if ($filter->status_filter == "AGUARDANDO" || $filter->status_filter == "PAUSADO") : ?>
                                 <div class="col-md-2"><button class="btn btn-lg btn-outline-success" id="btn_editar"><i class="fas fa-edit"> Salvar Filtro</i></button></div>
                                 <?php if ($filter->waiting == 0) : ?>
@@ -694,6 +695,41 @@
                                 </table><br>
                             <?php endif; ?>
                         </div>
+
+                        <div class="tab-pane fade" id="csv" role="tabpanel" aria-labelledby="csv-tab">
+                        <table id="table2csv" class="table">
+                            <thead>
+                                <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">CPF</th>
+                                <th scope="col">Matrícula</th>
+                                <th scope="col">Telefone 1</th>
+                                <th scope="col">Telefone 2</th>
+                                <th scope="col">Telefone 3</th>
+                                <th scope="col">Telefone 4</th>
+                                <th scope="col">Telefone 5</th>
+                                <th scope="col">Telefone 6</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($clientesAtendidos as $clienteAtendido): ?>
+
+                                    <tr>
+                                        <td><?= $clienteAtendido->id ?></td>
+                                        <td><?= $clienteAtendido->CPF ?></td>
+                                        <td><?= $clienteAtendido->MATRICULA ?></td>
+                                        <td><?= $clienteAtendido->telefone_01 ?></td>
+                                        <td><?= $clienteAtendido->telefone_02 ?></td>
+                                        <td><?= $clienteAtendido->telefone_03 ?></td>
+                                        <td><?= $clienteAtendido->telefone_04 ?></td>
+                                        <td><?= $clienteAtendido->telefone_05 ?></td>
+                                        <td><?= $clienteAtendido->telefone_06 ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                                    
+                            </tbody>
+                            </table>
+                        </div>
                     </div>
                 </form>
             </div><!-- /.card -->
@@ -742,4 +778,23 @@
 </div>
 <?php $v->start("scripts"); ?>
 <script src="<?= url("/shared/scripts/filter_edit.js"); ?>"></script>
+<script>
+    $(document).ready(function() {
+            $('#table2csv').DataTable({
+                "language": {
+                    "search": "Procurar:",
+                    "lengthMenu": "_MENU_ Resultados por página",
+                    "zeroRecords": "Nenhum Registro Encontrado",
+                    "infoEmpty": "Nenhum Registro Encontrado",
+                },
+                dom: 'Bfrtip',
+                buttons: [
+                'excel',
+                ],
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4]
+                },
+            });
+        });
+</script>
 <?php $v->end(); ?>

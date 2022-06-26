@@ -131,7 +131,7 @@ class LogIn extends Controller
         );
 
         echo $this->view->render("login/login", [
-            "head" => $head
+            "head" => $head . 'Hello'
         ]);
     }
 

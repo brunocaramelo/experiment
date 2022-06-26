@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-
+<?php use Carbon\Carbon; ?>
 <html lang="en">
 
 <head>
@@ -183,7 +183,7 @@ $companyLogo = ($logo ? image($logo, 100, 100) : "");
 
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-light-blue elevation-">
-            <div id="faixaazul" <!-- Brand Logo -->
+            <div id="faixaazul">
                 <a href="<?= $router->route("dash.dash"); ?>" class="brand-link">
                     <img src="<?= url("/shared/images/logo6.png") ?>" width="200" alt="Logo">
                 </a>
@@ -286,6 +286,7 @@ $companyLogo = ($logo ? image($logo, 100, 100) : "");
                                 <p>Consulta</p>
                             </a>
                         </li>
+
                         <li <?php if ($menu == "schedulings") : ?>class="nav-item menu-open" <?php else : ?>class="nav-item" <?php endif ?>>
                             <a href="<?= $router->route("filter.scheduling"); ?>" <?php if ($submenu == "schedulings") : ?>class="nav-link active" <?php else : ?>class="nav-link" <?php endif ?>>
                                 <i class="nav-icon fas fa-calendar-alt"></i>
@@ -298,6 +299,37 @@ $companyLogo = ($logo ? image($logo, 100, 100) : "");
                                 <p>Atendimentos</p>
                             </a>
                         </li>
+
+                        <?php if (user()->level_id == 2) : ?>
+                            <li <?php if ($menu == "clientTicketsPaid" || $menu == "clientTicketsUnpaid") : ?>class="nav-item menu-open" <?php else : ?>class="nav-item" <?php endif ?>>
+                                <a href="#" <?php if ($menu == "clientTicketsPaid" || $menu == "clientTicketsUnpaid") : ?>class="nav-link active" <?php else : ?>class="nav-link" <?php endif ?>>
+                                    <i class="nav-icon fas fa-receipt"></i>
+                                    <p>
+                                        Boletos
+                                        <i class="right fas fa-angle-down"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <?php if (user()->client == 1) : ?>
+                                        <li class="nav-item">
+                                            <a href="<?= $router->route("ticket.clientTicketsUnpaid"); ?>" <?php if ($submenu == "tickets-unpaid") : ?>class="nav-link active" <?php else : ?>class="nav-link" <?php endif ?>>
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Boletos a pagar</p>
+                                            </a>
+                                        </li>
+
+                                        <li class="nav-item">
+                                            <a href="<?= $router->route("ticket.clientTicketPaid"); ?>" <?php if ($submenu == "tickets-paid") : ?>class="nav-link active" <?php else : ?>class="nav-link" <?php endif ?>>
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Boletos pagos</p>
+                                            </a>
+                                        </li>
+                                        
+                                    <?php endif; ?>
+                                </ul>
+                            </li>
+                        <?php endif; ?>
+
                         <?php if (user()->level_id == 1) : ?>
                             <li <?php if ($menu == "resumo") : ?>class="nav-item menu-open" <?php else : ?>class="nav-item" <?php endif ?>>
                                 <a href="<?= $router->route("filter.resumo"); ?>" <?php if ($submenu == "resumo") : ?>class="nav-link active" <?php else : ?>class="nav-link" <?php endif ?>>
@@ -400,6 +432,15 @@ $companyLogo = ($logo ? image($logo, 100, 100) : "");
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->
+                <?php
+                    $firstTicketToPayGreatherThanToday = $firstTicketToPayGreatherThanToday ?? null;
+                    if ($firstTicketToPayGreatherThanToday) {
+                        $daysRemaining = Carbon::now()->diff($firstTicketToPayGreatherThanToday->due_date)->d;
+                        if ($firstTicketToPayGreatherThanToday && user()->level_id == 2 && $daysRemaining <= 2) {
+                            include __DIR__."/./tickets/components/notification.php";
+                        }
+                    }
+            ?>
             </div>
             <!-- /.sidebar -->
         </aside>
@@ -448,550 +489,567 @@ $companyLogo = ($logo ? image($logo, 100, 100) : "");
             </div>
         </div>
     </div>
-<?php if(isset(returnScheduling()->date_return)){?>
-    <div class="modal" id="modalScheduling" tabindex="-1" data-backdrop="static" role="dialog">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Existe um atendimento agendado para <?= date_fmt2(returnScheduling()->date_return) ?></h5>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="container">
-                                <table class="table" >
-                                    <thead>
-                                        <tr>
-                                            <th>Cliente</th>
-                                            <th>Matrícula</th>
-                                            <th>CPF</th>
-                                            <th>Atendimento</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td><?= returnScheduling()->clientDesc()->NOME ?></td>
-                                            <td><?= returnScheduling()->clientDesc()->MATRICULA ?></td>
-                                            <td><?= returnScheduling()->clientDesc()->CPF ?></td>
-                                            <td><a href="<?= url("/cliente/consulta/" . returnScheduling()->clientDesc()->id); ?>"><i class="fas fa-phone"></i></a></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-            </div>
-        </div>
-    </div>
-    <?php } ?>
-    <!-- jQuery -->
     <script src="<?= url("/shared/scripts/jquery.min.js"); ?>"></script>
 
-    <script src="<?= url("/shared/scripts/jquery.form.js"); ?>"></script>
+<script src="<?= url("/shared/scripts/jquery.form.js"); ?>"></script>
 
-    <!-- jQuery UI 1.11.4 -->
-    <script src="<?= url("/shared/scripts/jquery-ui.js"); ?>"></script>
+<!-- Pnotify -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pnotify/attempt-to-update-packagist/pnotify.js" integrity="sha512-vVCwjYtarAac2AMUNPP0cqRITQ00L8kXCRzUfLInqdz3iPUa/3kuBiXjhcEG4VaBLsBzgcChpq68qzUl1LAZ4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-    <script src="<?= url("/shared/scripts/jquery.mask.js"); ?>"></script>
+<!-- jQuery UI 1.11.4 -->
+<script src="<?= url("/shared/scripts/jquery-ui.js"); ?>"></script>
 
-    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
-    <script src="<?= url("/shared/scripts/scripts.js"); ?>"></script>
-    <script>
-        $.widget.bridge('uibutton', $.ui.button)
-    </script>
+<script src="<?= url("/shared/scripts/jquery.mask.js"); ?>"></script>
 
-    <script src="<?= theme("/assets/js/popper.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
-    <!-- Bootstrap 4 -->
-    <script src="<?= theme("/assets/plugins/bootstrap/js/bootstrap.bundle.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
-    <!-- ChartJS -->
-    <script src="<?= theme("/assets/plugins/chart.js/Chart.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
-    <!-- Sparkline -->
-    <script src="<?= theme("/assets/plugins/sparklines/sparkline.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
-    <!-- JQVMap -->
-    <script src="<?= theme("/assets/plugins/jqvmap/jquery.vmap.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
-    <script src="<?= theme("/assets/plugins/jqvmap/maps/jquery.vmap.usa.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
-    <!-- jQuery Knob Chart -->
-    <script src="<?= theme("/assets/plugins/jquery-knob/jquery.knob.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
-    <!-- daterangepicker -->
-    <script src="<?= theme("/assets/plugins/moment/moment.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
-    <script src="<?= theme("/assets/plugins/daterangepicker/daterangepicker.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
-    <!-- Tempusdominus Bootstrap 4 -->
-    <script src="<?= theme("/assets/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
-    <!-- Summernote -->
-    <script src="<?= theme("/assets/plugins/summernote/summernote-bs4.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
-    <!-- overlayScrollbars -->
-    <script src="<?= theme("/assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
-    <!-- AdminLTE App -->
-    <script src="<?= theme("/assets/js/adminlte.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
-    <!-- Toastr -->
-    <script src="<?= theme("/assets/plugins/toastr/toastr.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
-    <!-- AdminLTE for demo purposes -->
-    <script src="<?= theme("/assets/js/demo.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
-    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-    <script src="<?= theme("/assets/js/pages/dashboard.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
-    <!-- Select2 -->
-    <script src="<?= theme("/assets/plugins/select2/js/select2.full.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
-    <!-- Ekko Lightbox -->
-    <script src="<?= theme("/assets/plugins/ekko-lightbox/ekko-lightbox.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
-    <!-- Filterizr-->
-    <script src="<?= theme("/assets/plugins/filterizr/jquery.filterizr.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
-    <!-- Bootstrap4 Duallistbox -->
-    <script src="<?= theme("/assets/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script src="<?= url("/shared/scripts/scripts.js"); ?>"></script>
+<script>
+    $.widget.bridge('uibutton', $.ui.button)
+</script>
 
-    <script src="<?= theme("/assets/js/bootstrap-multiselect.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
+<script src="<?= theme("/assets/js/popper.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
+<!-- Bootstrap 4 -->
+<script src="<?= theme("/assets/plugins/bootstrap/js/bootstrap.bundle.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
+<!-- ChartJS -->
+<script src="<?= theme("/assets/plugins/chart.js/Chart.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
+<!-- Sparkline -->
+<script src="<?= theme("/assets/plugins/sparklines/sparkline.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
+<!-- JQVMap -->
+<script src="<?= theme("/assets/plugins/jqvmap/jquery.vmap.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
+<script src="<?= theme("/assets/plugins/jqvmap/maps/jquery.vmap.usa.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
+<!-- jQuery Knob Chart -->
+<script src="<?= theme("/assets/plugins/jquery-knob/jquery.knob.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
+<!-- daterangepicker -->
+<script src="<?= theme("/assets/plugins/moment/moment.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
+<script src="<?= theme("/assets/plugins/daterangepicker/daterangepicker.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script src="<?= theme("/assets/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
+<!-- Summernote -->
+<script src="<?= theme("/assets/plugins/summernote/summernote-bs4.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
+<!-- overlayScrollbars -->
+<script src="<?= theme("/assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
+<!-- AdminLTE App -->
+<script src="<?= theme("/assets/js/adminlte.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
+<!-- Toastr -->
+<script src="<?= theme("/assets/plugins/toastr/toastr.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="<?= theme("/assets/js/demo.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
+<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+<script src="<?= theme("/assets/js/pages/dashboard.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
+<!-- Select2 -->
+<script src="<?= theme("/assets/plugins/select2/js/select2.full.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
+<!-- Ekko Lightbox -->
+<script src="<?= theme("/assets/plugins/ekko-lightbox/ekko-lightbox.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
+<!-- Filterizr-->
+<script src="<?= theme("/assets/plugins/filterizr/jquery.filterizr.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
+<!-- Bootstrap4 Duallistbox -->
+<script src="<?= theme("/assets/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
 
-    <script src="<?= theme("/assets/js/Financing.min.js?_v=0", CONF_VIEW_THEME_ADMIN); ?>"></script>
+<script src="<?= theme("/assets/js/bootstrap-multiselect.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
 
-    <!-- fullCalendar 2.2.5 -->
-    <script src="<?= theme("/assets/plugins/fullcalendar/main.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
-    <script src="<?= theme("/assets/plugins/fullcalendar-daygrid/main.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
-    <script src="<?= theme("/assets/plugins/fullcalendar-timegrid/main.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
-    <script src="<?= theme("/assets/plugins/fullcalendar-interaction/main.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
-    <script src="<?= theme("/assets/plugins/fullcalendar-bootstrap/main.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
+<script src="<?= theme("/assets/js/Financing.min.js?_v=0", CONF_VIEW_THEME_ADMIN); ?>"></script>
 
-    <script type="text/javascript" src="<?= theme("/assets/highslide/highslide-full.packed.js", CONF_VIEW_THEME_ADMIN) ?>"></script>
+<!-- fullCalendar 2.2.5 -->
+<script src="<?= theme("/assets/plugins/fullcalendar/main.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
+<script src="<?= theme("/assets/plugins/fullcalendar-daygrid/main.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
+<script src="<?= theme("/assets/plugins/fullcalendar-timegrid/main.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
+<script src="<?= theme("/assets/plugins/fullcalendar-interaction/main.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
+<script src="<?= theme("/assets/plugins/fullcalendar-bootstrap/main.min.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
 
-
-    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
-    <script src=" https://cdn.datatables.net/fixedheader/3.1.6/js/dataTables.fixedHeader.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/1.6.5/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/1.6.5/js/buttons.print.min.js"></script>
-
-    <script src="https://cdn.datatables.net/buttons/1.6.5/js/buttons.flash.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-    <script src="https://cdn.datatables.net/buttons/1.6.5/js/buttons.html5.min.js"></script>
+<script type="text/javascript" src="<?= theme("/assets/highslide/highslide-full.packed.js", CONF_VIEW_THEME_ADMIN) ?>"></script>
 
 
-    <script type="text/javascript">
-        var path = '<?php echo url(); ?>'
+<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+<script src=" https://cdn.datatables.net/fixedheader/3.1.6/js/dataTables.fixedHeader.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.6.5/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.6.5/js/buttons.print.min.js"></script>
 
-        hs.graphicsDir = '<?= theme("/assets/highslide/graphics/", CONF_VIEW_THEME_ADMIN); ?>'
-        hs.align = 'center';
-        hs.transitions = ['expand', 'crossfade'];
-        hs.outlineType = 'rounded-white';
-        hs.fadeInOut = true;
-        //hs.dimmingOpacity = 0.75;
+<script src="https://cdn.datatables.net/buttons/1.6.5/js/buttons.flash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.6.5/js/buttons.html5.min.js"></script>
+<script src="<?= theme("/assets/js/notification.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
+<script src="<?= theme("/assets/js/table2csv.js", CONF_VIEW_THEME_ADMIN); ?>"></script>
 
-        // Add the controlbar
-        hs.addSlideshow({
-            //slideshowGroup: 'group1',
-            interval: 5000,
-            repeat: false,
-            useControls: true,
-            fixedControls: 'fit',
-            overlayOptions: {
-                opacity: .75,
-                position: 'bottom center',
-                hideOnMouseOut: true
-            }
+<script type="text/javascript">
+    
+
+    var path = '<?php echo url(); ?>'
+
+    hs.graphicsDir = '<?= theme("/assets/highslide/graphics/", CONF_VIEW_THEME_ADMIN); ?>'
+    hs.align = 'center';
+    hs.transitions = ['expand', 'crossfade'];
+    hs.outlineType = 'rounded-white';
+    hs.fadeInOut = true;
+    //hs.dimmingOpacity = 0.75;
+
+    // Add the controlbar
+    hs.addSlideshow({
+        //slideshowGroup: 'group1',
+        interval: 5000,
+        repeat: false,
+        useControls: true,
+        fixedControls: 'fit',
+        overlayOptions: {
+            opacity: .75,
+            position: 'bottom center',
+            hideOnMouseOut: true
+        }
+    });
+
+
+    $(function() {
+        $(document).on('click', '[data-toggle="lightbox"]', function(event) {
+            event.preventDefault();
+            $(this).ekkoLightbox({
+                alwaysShowClose: true
+            });
         });
 
+        $('.filter-container').filterizr({
+            gutterPixels: 3
+        });
+        $('.btn[data-filter]').on('click', function() {
+            $('.btn[data-filter]').removeClass('active');
+            $(this).addClass('active');
+        });
+    })
 
-        $(function() {
-            $(document).on('click', '[data-toggle="lightbox"]', function(event) {
-                event.preventDefault();
-                $(this).ekkoLightbox({
-                    alwaysShowClose: true
-                });
-            });
+    $('table.display2').DataTable();
+    
 
-            $('.filter-container').filterizr({
-                gutterPixels: 3
-            });
-            $('.btn[data-filter]').on('click', function() {
-                $('.btn[data-filter]').removeClass('active');
-                $(this).addClass('active');
-            });
+    var table = $('#example1').DataTable({
+        "ordering": true,
+        "paging": true,
+        "info": true,
+        "lengthChange": true,
+        "language": {
+            "search": "Procurar:",
+            "paginate": {
+                "first": "Primeiro",
+                "last": "Último",
+                "next": "Próximo",
+                "previous": "Anterior"
+            },
+            "lengthMenu": "_MENU_ Resultados por página",
+            "zeroRecords": "Nenhum Registro Encontrado",
+            "info": "Mostrar página _PAGE_ de _PAGES_",
+            "infoEmpty": "Nenhum Registro Encontrado",
+            "infoFiltered": "(filtrar por _MAX_ total de registro)"
+        },
+        dom: 'Blfrtip',
+        buttons: [{
+                extend: 'print',
+                text: 'Imprimir',
+                footer: true,
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4]
+                },
+                /*customize: function ( win ) {
+                    $(win.document.body)
+                        .css( 'font-size', '10pt' )
+                        .prepend(
+                            '<img src="<?= $companyLogo; ?>" style="position:absolute; top:0; left:20;" />'
+                        );
+
+                    $(win.document.body).find( 'table' )
+                        .addClass( 'compact' )
+                        .css( 'font-size', 'inherit' );
+                }*/
+            },
+            {
+                extend: 'excel',
+                footer: true,
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4]
+                },
+
+            },
+        ],
+
+        responsive: true
+    });
+
+    var table = $('#filter').DataTable({
+        "ordering": true,
+        "paging": false,
+        "info": false,
+        "lengthChange": false,
+        "language": {
+            "search": "Procurar:",
+            "lengthMenu": "_MENU_ Resultados por página",
+            "zeroRecords": "Nenhum Registro Encontrado",
+            "infoEmpty": "Nenhum Registro Encontrado",
+        },
+        dom: 'Blfrtip',
+        buttons: [{
+                extend: 'print',
+                text: 'Imprimir',
+                footer: true,
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4, 5]
+                },
+            },
+            {
+                extend: 'excel',
+                footer: true,
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4]
+                },
+
+            },
+        ],
+
+        responsive: true
+    });
+
+    var table = $('#filter1').DataTable({
+        "ordering": true,
+        "paging": false,
+        "info": false,
+        "lengthChange": false,
+        "language": {
+            "search": "Procurar:",
+            "lengthMenu": "_MENU_ Resultados por página",
+            "zeroRecords": "Nenhum Registro Encontrado",
+            "infoEmpty": "Nenhum Registro Encontrado",
+        },
+
+        responsive: true
+    });
+
+    var table = $('#example1alt').DataTable({
+        "ordering": true,
+        "paging": true,
+        "info": true,
+        "lengthChange": true,
+        "language": {
+            "search": "Procurar:",
+            "paginate": {
+                "first": "Primeiro",
+                "last": "Último",
+                "next": "Próximo",
+                "previous": "Anterior"
+            },
+            "lengthMenu": "_MENU_ Resultados por página",
+            "zeroRecords": "Nenhum Registro Encontrado",
+            "info": "Mostrar página _PAGE_ de _PAGES_",
+            "infoEmpty": "Nenhum Registro Encontrado",
+            "infoFiltered": "(filtrar por _MAX_ total de registro)"
+        },
+        dom: 'Blfrtip',
+        buttons: [{
+                extend: 'print',
+                text: 'Imprimir',
+                footer: true,
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4, 5, 6, 7]
+                },
+                /*customize: function ( win ) {
+                    $(win.document.body)
+                        .css( 'font-size', '10pt' )
+                        .prepend(
+                            '<img src="<?= $companyLogo; ?>" style="position:absolute; top:0; left:20;" />'
+                        );
+
+                    $(win.document.body).find( 'table' )
+                        .addClass( 'compact' )
+                        .css( 'font-size', 'inherit' );
+                }*/
+            },
+            {
+                extend: 'excel',
+                footer: true,
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4, 5, 6, 7]
+                },
+
+            },
+        ],
+
+        responsive: true
+    });
+
+    var table = $('#example2').DataTable({
+        "ordering": false,
+        "paging": true,
+        "info": true,
+        "lengthChange": false,
+        "language": {
+            "search": "Procurar:",
+            "paginate": {
+                "first": "Primeiro",
+                "last": "Último",
+                "next": "Próximo",
+                "previous": "Anterior"
+            },
+            "zeroRecords": "Nenhum Registro Encontrado",
+            "info": "Mostrar página _PAGE_ de _PAGES_",
+            "infoEmpty": "Nenhum Registro Encontrado",
+            "infoFiltered": "(filtrar por _MAX_ total de registro)"
+        },
+        responsive: true
+    });
+
+    var table = $('#example2alt').DataTable({
+        "ordering": false,
+        "paging": true,
+        "info": true,
+        "lengthChange": false,
+        "language": {
+            "search": "Procurar:",
+            "paginate": {
+                "first": "Primeiro",
+                "last": "Último",
+                "next": "Próximo",
+                "previous": "Anterior"
+            },
+            "zeroRecords": "Nenhum Registro Encontrado",
+            "info": "Mostrar página _PAGE_ de _PAGES_",
+            "infoEmpty": "Nenhum Registro Encontrado",
+            "infoFiltered": "(filtrar por _MAX_ total de registro)"
+        },
+        responsive: true
+    });
+
+    var table = $('#example3').DataTable({
+        "ordering": false,
+        "paging": false,
+        "info": false,
+        "lengthChange": false,
+        "searching": false,
+        "language": {
+            "search": "Procurar:",
+            "paginate": {
+                "first": "Primeiro",
+                "last": "Último",
+                "next": "Próximo",
+                "previous": "Anterior"
+            },
+            "zeroRecords": "Nenhum Registro Encontrado",
+            "info": "Mostrar página _PAGE_ de _PAGES_",
+            "infoEmpty": "Nenhum Registro Encontrado",
+            "infoFiltered": "(filtrar por _MAX_ total de registro)"
+        },
+        buttons: [
+            {
+                extend: 'excel',
+                footer: true,
+                exportOptions: {
+                    columns: [0, 1, 2, 4, 5, 6, 7, 8, 9, 10]
+                },
+
+            },
+        ],
+        responsive: true
+    });
+
+    var table = $('#example4').DataTable({
+        "ordering": false,
+        "paging": false,
+        "info": false,
+        "lengthChange": false,
+        "language": {
+            "search": "Procurar:",
+            "paginate": {
+                "first": "Primeiro",
+                "last": "Último",
+                "next": "Próximo",
+                "previous": "Anterior"
+            },
+            "zeroRecords": "Nenhum Registro Encontrado",
+            "info": "Mostrar página _PAGE_ de _PAGES_",
+            "infoEmpty": "Nenhum Registro Encontrado",
+            "infoFiltered": "(filtrar por _MAX_ total de registro)"
+        },
+        buttons: [
+            {
+                extend: 'excel',
+                footer: true,
+                exportOptions: {
+                    columns: [0, 1, 2]
+                },
+
+            },
+        ],
+        responsive: true
+    });
+
+    var table = $('#exampleOrder2').DataTable({
+        "ordering": true,
+        "paging": true,
+        "info": true,
+        "lengthChange": true,
+        "order": [1, 'asc'],
+        "language": {
+            "search": "Procurar:",
+            "paginate": {
+                "first": "Primeiro",
+                "last": "Último",
+                "next": "Próximo",
+                "previous": "Anterior"
+            },
+            "lengthMenu": "_MENU_ Resultados por página",
+            "zeroRecords": "Nenhum Registro Encontrado",
+            "info": "Mostrar página _PAGE_ de _PAGES_",
+            "infoEmpty": "Nenhum Registro Encontrado",
+            "infoFiltered": "(filtrar por _MAX_ total de registro)"
+        },
+        dom: 'Blfrtip',
+        buttons: [{
+                extend: 'print',
+                text: 'Imprimir',
+                footer: true,
+                exportOptions: {
+                    columns: [0, 1, 2]
+                },
+            },
+            {
+                extend: 'excel',
+                footer: true,
+                exportOptions: {
+                    columns: [0, 1, 2]
+                },
+
+            },
+        ],
+
+        responsive: true
+    });
+
+
+    var table = $('#example5').DataTable({
+        "ordering": true,
+        "paging": true,
+        "info": true,
+        "lengthChange": true,
+        "language": {
+            "search": "Procurar:",
+            "paginate": {
+                "first": "Primeiro",
+                "last": "Último",
+                "next": "Próximo",
+                "previous": "Anterior"
+            },
+            "lengthMenu": "_MENU_ Resultados por página",
+            "zeroRecords": "Nenhum Registro Encontrado",
+            "info": "Mostrar página _PAGE_ de _PAGES_",
+            "infoEmpty": "Nenhum Registro Encontrado",
+            "infoFiltered": "(filtrar por _MAX_ total de registro)"
+        },
+        dom: 'Blfrtip',
+        buttons: [{
+                extend: 'print',
+                text: 'Imprimir',
+                footer: true,
+                exportOptions: {
+                    columns: [0, 1, 2, 3]
+                },
+
+            },
+            {
+                extend: 'excel',
+                footer: true,
+                exportOptions: {
+                    columns: [0, 1, 2, 3]
+                },
+
+            },
+        ],
+
+        responsive: true
+    });
+
+
+    var table = $('#mytable').DataTable({
+        "ordering": false,
+        "paging": true,
+        "info": true,
+        "lengthChange": false,
+        "language": {
+            "search": "Procurar:",
+            "paginate": {
+                "first": "Primeiro",
+                "last": "Último",
+                "next": "Próximo",
+                "previous": "Anterior"
+            },
+            "zeroRecords": "Nenhum Registro Encontrado",
+            "info": "Mostrar página _PAGE_ de _PAGES_",
+            "infoEmpty": "Nenhum Registro Encontrado",
+            "infoFiltered": "(filtrar por _MAX_ total de registro)"
+        },
+        responsive: true
+    });
+
+    $(function() {
+        //Initialize Select2 Elements
+        //$('.select2').select2()
+
+        $('.select2').select2({
+            theme: 'bootstrap4'
+        })
+        //Initialize Select2 Elements
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
         })
 
-        $('table.display2').DataTable();
+        //Bootstrap Duallistbox
+        $('.duallistbox').bootstrapDualListbox();
 
-        var table = $('#example1').DataTable({
-            "ordering": true,
-            "paging": true,
-            "info": true,
-            "lengthChange": true,
-            "language": {
-                "search": "Procurar:",
-                "paginate": {
-                    "first": "Primeiro",
-                    "last": "Último",
-                    "next": "Próximo",
-                    "previous": "Anterior"
-                },
-                "lengthMenu": "_MENU_ Resultados por página",
-                "zeroRecords": "Nenhum Registro Encontrado",
-                "info": "Mostrar página _PAGE_ de _PAGES_",
-                "infoEmpty": "Nenhum Registro Encontrado",
-                "infoFiltered": "(filtrar por _MAX_ total de registro)"
-            },
-            dom: 'Blfrtip',
-            buttons: [{
-                    extend: 'print',
-                    text: 'Imprimir',
-                    footer: true,
-                    exportOptions: {
-                        columns: [0, 1, 2, 3, 4]
-                    },
-                    /*customize: function ( win ) {
-                        $(win.document.body)
-                            .css( 'font-size', '10pt' )
-                            .prepend(
-                                '<img src="<?= $companyLogo; ?>" style="position:absolute; top:0; left:20;" />'
-                            );
-
-                        $(win.document.body).find( 'table' )
-                            .addClass( 'compact' )
-                            .css( 'font-size', 'inherit' );
-                    }*/
-                },
-                {
-                    extend: 'excel',
-                    footer: true,
-                    exportOptions: {
-                        columns: [0, 1, 2, 3, 4]
-                    },
-
-                },
-            ],
-
-            responsive: true
+        /*$("#search_matricula").bind('paste', function(e) {
+            e.preventDefault();
+        });*/
+        $('.selectoption').multiselect({
+            includeSelectAllOption: true,
+            nonSelectedText: 'Selecione a opção',
+            enableFiltering: true
+            /*buttonWidth:'500px'*/
         });
+    })
+    let myGreeting = setTimeout(function() {
+        window.location.href = path + "/logoff";
+    }, 1779999)
 
-        var table = $('#filter').DataTable({
-            "ordering": true,
-            "paging": false,
-            "info": false,
-            "lengthChange": false,
-            "language": {
-                "search": "Procurar:",
-                "lengthMenu": "_MENU_ Resultados por página",
-                "zeroRecords": "Nenhum Registro Encontrado",
-                "infoEmpty": "Nenhum Registro Encontrado",
+    if ($("#user_validate").val() == 0) {
+        $('#modalPassword2').modal('show');
+    }
+
+    if ($("#scheduling").val() != "") {
+        $('#modalScheduling').modal('show');
+    }
+
+
+
+
+    // Cristiano's code... 
+    var table = $('#table-tickets').DataTable({
+        "ordering": false,
+        "paging": true,
+        "info": true,
+        "lengthChange": true,
+        "language": {
+            "search": "Procurar:",
+            "paginate": {
+                "first": "Primeiro",
+                "last": "Último",
+                "next": "Próximo",
+                "previous": "Anterior"
             },
-            dom: 'Blfrtip',
-            buttons: [{
-                    extend: 'print',
-                    text: 'Imprimir',
-                    footer: true,
-                    exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5]
-                    },
-                },
-                {
-                    extend: 'excel',
-                    footer: true,
-                    exportOptions: {
-                        columns: [0, 1, 2, 3, 4]
-                    },
+            "lengthMenu": "_MENU_ Resultados por página",
+            "zeroRecords": "Nenhum Registro Encontrado",
+            "info": "Mostrar página _PAGE_ de _PAGES_",
+            "infoEmpty": "Nenhum Registro Encontrado",
+            "infoFiltered": "(filtrar por _MAX_ total de registro)"
+        },
 
-                },
-            ],
+        responsive: true
+    });
 
-            responsive: true
-        });
-
-        var table = $('#filter1').DataTable({
-            "ordering": true,
-            "paging": false,
-            "info": false,
-            "lengthChange": false,
-            "language": {
-                "search": "Procurar:",
-                "lengthMenu": "_MENU_ Resultados por página",
-                "zeroRecords": "Nenhum Registro Encontrado",
-                "infoEmpty": "Nenhum Registro Encontrado",
-            },
-
-            responsive: true
-        });
-
-        var table = $('#example1alt').DataTable({
-            "ordering": true,
-            "paging": true,
-            "info": true,
-            "lengthChange": true,
-            "language": {
-                "search": "Procurar:",
-                "paginate": {
-                    "first": "Primeiro",
-                    "last": "Último",
-                    "next": "Próximo",
-                    "previous": "Anterior"
-                },
-                "lengthMenu": "_MENU_ Resultados por página",
-                "zeroRecords": "Nenhum Registro Encontrado",
-                "info": "Mostrar página _PAGE_ de _PAGES_",
-                "infoEmpty": "Nenhum Registro Encontrado",
-                "infoFiltered": "(filtrar por _MAX_ total de registro)"
-            },
-            dom: 'Blfrtip',
-            buttons: [{
-                    extend: 'print',
-                    text: 'Imprimir',
-                    footer: true,
-                    exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5, 6, 7]
-                    },
-                    /*customize: function ( win ) {
-                        $(win.document.body)
-                            .css( 'font-size', '10pt' )
-                            .prepend(
-                                '<img src="<?= $companyLogo; ?>" style="position:absolute; top:0; left:20;" />'
-                            );
-
-                        $(win.document.body).find( 'table' )
-                            .addClass( 'compact' )
-                            .css( 'font-size', 'inherit' );
-                    }*/
-                },
-                {
-                    extend: 'excel',
-                    footer: true,
-                    exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5, 6, 7]
-                    },
-
-                },
-            ],
-
-            responsive: true
-        });
-
-        var table = $('#example2').DataTable({
-            "ordering": false,
-            "paging": true,
-            "info": true,
-            "lengthChange": false,
-            "language": {
-                "search": "Procurar:",
-                "paginate": {
-                    "first": "Primeiro",
-                    "last": "Último",
-                    "next": "Próximo",
-                    "previous": "Anterior"
-                },
-                "zeroRecords": "Nenhum Registro Encontrado",
-                "info": "Mostrar página _PAGE_ de _PAGES_",
-                "infoEmpty": "Nenhum Registro Encontrado",
-                "infoFiltered": "(filtrar por _MAX_ total de registro)"
-            },
-            responsive: true
-        });
-
-        var table = $('#example2alt').DataTable({
-            "ordering": false,
-            "paging": true,
-            "info": true,
-            "lengthChange": false,
-            "language": {
-                "search": "Procurar:",
-                "paginate": {
-                    "first": "Primeiro",
-                    "last": "Último",
-                    "next": "Próximo",
-                    "previous": "Anterior"
-                },
-                "zeroRecords": "Nenhum Registro Encontrado",
-                "info": "Mostrar página _PAGE_ de _PAGES_",
-                "infoEmpty": "Nenhum Registro Encontrado",
-                "infoFiltered": "(filtrar por _MAX_ total de registro)"
-            },
-            responsive: true
-        });
-
-        var table = $('#example3').DataTable({
-            "ordering": false,
-            "paging": false,
-            "info": false,
-            "lengthChange": false,
-            "searching": false,
-            "language": {
-                "search": "Procurar:",
-                "paginate": {
-                    "first": "Primeiro",
-                    "last": "Último",
-                    "next": "Próximo",
-                    "previous": "Anterior"
-                },
-                "zeroRecords": "Nenhum Registro Encontrado",
-                "info": "Mostrar página _PAGE_ de _PAGES_",
-                "infoEmpty": "Nenhum Registro Encontrado",
-                "infoFiltered": "(filtrar por _MAX_ total de registro)"
-            },
-            responsive: true
-        });
-
-        var table = $('#example4').DataTable({
-            "ordering": false,
-            "paging": false,
-            "info": false,
-            "lengthChange": false,
-            "language": {
-                "search": "Procurar:",
-                "paginate": {
-                    "first": "Primeiro",
-                    "last": "Último",
-                    "next": "Próximo",
-                    "previous": "Anterior"
-                },
-                "zeroRecords": "Nenhum Registro Encontrado",
-                "info": "Mostrar página _PAGE_ de _PAGES_",
-                "infoEmpty": "Nenhum Registro Encontrado",
-                "infoFiltered": "(filtrar por _MAX_ total de registro)"
-            },
-            responsive: true
-        });
-
-        var table = $('#exampleOrder2').DataTable({
-            "ordering": true,
-            "paging": true,
-            "info": true,
-            "lengthChange": true,
-            "order": [1, 'asc'],
-            "language": {
-                "search": "Procurar:",
-                "paginate": {
-                    "first": "Primeiro",
-                    "last": "Último",
-                    "next": "Próximo",
-                    "previous": "Anterior"
-                },
-                "lengthMenu": "_MENU_ Resultados por página",
-                "zeroRecords": "Nenhum Registro Encontrado",
-                "info": "Mostrar página _PAGE_ de _PAGES_",
-                "infoEmpty": "Nenhum Registro Encontrado",
-                "infoFiltered": "(filtrar por _MAX_ total de registro)"
-            },
-            dom: 'Blfrtip',
-            buttons: [{
-                    extend: 'print',
-                    text: 'Imprimir',
-                    footer: true,
-                    exportOptions: {
-                        columns: [0, 1, 2]
-                    },
-                },
-                {
-                    extend: 'excel',
-                    footer: true,
-                    exportOptions: {
-                        columns: [0, 1, 2]
-                    },
-
-                },
-            ],
-
-            responsive: true
-        });
-
-
-        var table = $('#example5').DataTable({
-            "ordering": true,
-            "paging": true,
-            "info": true,
-            "lengthChange": true,
-            "language": {
-                "search": "Procurar:",
-                "paginate": {
-                    "first": "Primeiro",
-                    "last": "Último",
-                    "next": "Próximo",
-                    "previous": "Anterior"
-                },
-                "lengthMenu": "_MENU_ Resultados por página",
-                "zeroRecords": "Nenhum Registro Encontrado",
-                "info": "Mostrar página _PAGE_ de _PAGES_",
-                "infoEmpty": "Nenhum Registro Encontrado",
-                "infoFiltered": "(filtrar por _MAX_ total de registro)"
-            },
-            dom: 'Blfrtip',
-            buttons: [{
-                    extend: 'print',
-                    text: 'Imprimir',
-                    footer: true,
-                    exportOptions: {
-                        columns: [0, 1, 2, 3]
-                    },
-
-                },
-                {
-                    extend: 'excel',
-                    footer: true,
-                    exportOptions: {
-                        columns: [0, 1, 2, 3]
-                    },
-
-                },
-            ],
-
-            responsive: true
-        });
-
-
-        var table = $('#mytable').DataTable({
-            "ordering": false,
-            "paging": true,
-            "info": true,
-            "lengthChange": false,
-            "language": {
-                "search": "Procurar:",
-                "paginate": {
-                    "first": "Primeiro",
-                    "last": "Último",
-                    "next": "Próximo",
-                    "previous": "Anterior"
-                },
-                "zeroRecords": "Nenhum Registro Encontrado",
-                "info": "Mostrar página _PAGE_ de _PAGES_",
-                "infoEmpty": "Nenhum Registro Encontrado",
-                "infoFiltered": "(filtrar por _MAX_ total de registro)"
-            },
-            responsive: true
-        });
-
-        $(function() {
-            //Initialize Select2 Elements
-            //$('.select2').select2()
-
-            $('.select2').select2({
-                theme: 'bootstrap4'
-            })
-            //Initialize Select2 Elements
-            $('.select2bs4').select2({
-                theme: 'bootstrap4'
-            })
-
-            //Bootstrap Duallistbox
-            $('.duallistbox').bootstrapDualListbox();
-
-            /*$("#search_matricula").bind('paste', function(e) {
-                e.preventDefault();
-            });*/
-            $('.selectoption').multiselect({
-                includeSelectAllOption: true,
-                nonSelectedText: 'Selecione a opção',
-                enableFiltering: true
-                /*buttonWidth:'500px'*/
-            });
-        })
-        let myGreeting = setTimeout(function() {
-            window.location.href = path + "/logoff";
-        }, 1779999)
-
-        if ($("#user_validate").val() == 0) {
-            $('#modalPassword2').modal('show');
-        }
-
-        if ($("#scheduling").val() != "") {
-            $('#modalScheduling').modal('show');
-        }
-    </script>
-    <?= $v->section("scripts"); ?>
+</script>
+<?= $v->section("scripts"); ?>
 </body>
 
 </html>

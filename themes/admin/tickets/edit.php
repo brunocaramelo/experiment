@@ -29,7 +29,7 @@
     <section class="content">
         <div class="container-fluid"><br>
             <div class="card">
-                <form action="<?= url("/boletos/alterar/{$ticket->id}/cliente/{$accountId}") ?>" method="post">
+                <form enctype="multipart/form-data" action="<?= url("/boletos/alterar/{$ticket->id}/cliente/{$accountId}") ?>" method="post">
                     <input type="hidden" name="ticketId" value="<?= $ticket->id ?>" />
                     <input type="hidden" name="account_id" value="<?= $accountId ?>" />
                     <div class="card-body">
@@ -80,12 +80,25 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <!-- checkbox -->
+                                <label for="exampleFormControlFile1">
+                                    Arquivo PDF
+                                </label>
+                                <input type="file"
+                                    name="pdf"
+                                    class="form-control-file" 
+                                    id="exampleFormControlFile1" />
+                            </div>
+                        </div>
+                        
                         <br>
-                    <div class="container-fluid">
-                        <button type="submit" id="save" class="btn btn-success">
-                            <i class="fas fa-plus"></i> Editar boleto
-                        </button>
-                    </div><!-- /.card-footer -->
+                        <div class="container-fluid">
+                            <button type="submit" id="save" class="btn btn-success">
+                                <i class="fas fa-plus"></i> Editar boleto
+                            </button>
+                        </div><!-- /.card-footer -->
                 </form>
             </div>
         </div>

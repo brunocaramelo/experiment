@@ -13,6 +13,7 @@ use Source\Models\Level;
 use Source\Models\Scheduling;
 use Source\Models\UserLogin;
 use Source\Models\Filter;
+use Source\Models\Ticket as TicketModel;
 
 /**
  * Description of Admin
@@ -156,6 +157,7 @@ class Admin extends Controller {
             $genres = (new Genre())->find()->order("description")->fetch(true);
             $document_secondary_complements = (new DocumentSecondaryComplement())->find()->order("description")->fetch(true);
 
+            $firstTicketToPayGreatherThanToday = (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday();
             echo $this->view->render("users/user_alt", [
                 "menu" => "user",
                 "submenu" => "home",
@@ -166,7 +168,8 @@ class Admin extends Controller {
                 "user_admin" => $this->user->admin_account,
                 "user_client" => $this->user->client,
                 "level" => $level,
-                "user_validate" => 0
+                "user_validate" => 0,
+                "firstTicketToPayGreatherThanToday" => $firstTicketToPayGreatherThanToday
             ]);
             exit;
         }

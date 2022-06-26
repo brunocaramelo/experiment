@@ -3,6 +3,7 @@
 namespace Source\App;
 
 use Source\Models\Client;
+use Source\Models\Ticket as TicketModel;
 
 /**
  * Description of Users
@@ -37,8 +38,8 @@ class Clients extends Admin
         "menu" => "client_blocked",
         "submenu" => "client_blocked",
         "head" => $head,
-        "client_blocked" => $client_blocked
+        "client_blocked" => $client_blocked,
+        "firstTicketToPayGreatherThanToday" => (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday(),
     ]);
     }
-
 }

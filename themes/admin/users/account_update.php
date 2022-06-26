@@ -69,6 +69,25 @@
                                             endif; ?> value="2">Credlink</option>
                                 </select>
                             </div>
+                            <div class="col-md-6">
+                                
+                            </div>
+                            <div class="col-md-6">
+                                <label>Orgão: </label>
+                                <p>
+                                    <?php foreach ($organs as $key => $organ): ?>
+                                        <span>
+                                            <input <?= in_array($key + 1, $arrClientOrgans) ? 'checked' : '' ?>
+                                                name="organs[]" 
+                                                value="<?= $organ->id ?>" 
+                                                type="checkbox" 
+                                                id="<?= $organ->organ ?>">
+                                            <label for="<?= $organ->organ ?>"><?= $organ->organ ?></label>
+                                        </span>
+                                        <br>
+                                    <?php endforeach; ?>
+                                </p>
+                            </div>
                             <div class="col-md-12">
                                 <label>Quantidade de usuários:</label>
                                 <input class="form-control txt_numero" type="text" name="user_count" value="<?= $account->login ?>" placeholder="Quantidade de usuários" required />

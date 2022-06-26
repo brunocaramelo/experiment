@@ -405,10 +405,10 @@ class User extends DataLayer
 
         (new Session())->set("authUserSistemaCred", $user->id);
 
-        if (passwd_rehash($user->password)) {
-            $user->password = $password;
-            $user->save2();
-        }
+        // if (passwd_rehash($user->password)) {
+        //     $user->password = $user->password;
+        //     $user->save2();
+        // }
 
         $user->error_attempt = null;
         $user->error_date = null;

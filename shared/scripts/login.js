@@ -13,6 +13,8 @@ $(function () {
             data: form.serialize(),
             dataType: "json",
             success: function (response) {
+                console.log('success response --------------');
+                console.log(response)
                 //redirect
                 if (response.redirect) {
                     window.location.href = response.redirect;
@@ -31,6 +33,8 @@ $(function () {
                 }
             },
             error: function (response) {
+                console.log('error response --------------');
+                console.log(response)
                 load.fadeOut(200);
             }
         });

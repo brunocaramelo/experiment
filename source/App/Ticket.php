@@ -41,6 +41,7 @@ class Ticket extends Admin
             "submenu" => "tickets-paid",
             "head" => $head,
             "tickets" => $tickets,
+            "firstTicketToPayGreatherThanToday" => (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday(),
         ]);
     }
 
@@ -62,6 +63,7 @@ class Ticket extends Admin
             "head" => $head,
             "tickets" => $tickets,
             "accountId" => $data['accountId'],
+            "firstTicketToPayGreatherThanToday" => (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday(),
         ]);
     }
 
@@ -72,6 +74,7 @@ class Ticket extends Admin
     {
         $tickets = (new TicketModel())->getPaidTicketsOfClientOrderedByDueDate(); // model
         $firstTicketToPay = (new TicketModel())->getFirstTicketToPayByUserAccountId() ?? null;
+        $firstTicketToPayGreatherThanToday = (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday();
 
         $head = $this->seo->render(
             CONF_SITE_NAME . " | Boletos pagos",
@@ -87,6 +90,7 @@ class Ticket extends Admin
             "head" => $head,
             "tickets" => $tickets,
             "ticketToPay" => $firstTicketToPay,
+            "firstTicketToPayGreatherThanToday" => $firstTicketToPayGreatherThanToday,
         ]);
     }
 
@@ -94,6 +98,7 @@ class Ticket extends Admin
     {
         $tickets = (new TicketModel())->getUnpaidTicketsOfClientOrderedByDueDate(); // model
         $firstTicketToPay = (new TicketModel())->getFirstTicketToPayByUserAccountId() ?? null;
+        $firstTicketToPayGreatherThanToday = (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday();
 
         $head = $this->seo->render(
             CONF_SITE_NAME . " | Boletos a pagar",
@@ -109,23 +114,39 @@ class Ticket extends Admin
             "head" => $head,
             "tickets" => $tickets,
             "ticketToPay" => $firstTicketToPay,
+            "firstTicketToPayGreatherThanToday" => $firstTicketToPayGreatherThanToday,
         ]);
     }
 
     public function markTicketAsPaid(array $data)
     {
         if (!empty($data["action"]) && $data["action"] == "markTicketAsPaid") {
-            if (!empty($data['csrf'])) {
-                if ($_REQUEST && !csrf_verify($_REQUEST)) {
-                    $json["message"] = "Erro ao enviar o formulário, atualize a página";
-                    echo json_encode($json);
-                    return;
-                }
-            }
 
             $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
 
             $data = (new TicketModel())->getFirstTicketToPayByUserAccountId() ?? null;
+
+            $ticket = (new TicketModel());
+            $ticket->status = 'Boleto pago';
+            $ticket->id = $data['id'];
+
+            if (!$ticket->save()) {
+                $json["message"] = $ticket->fail()->getMessage();
+                echo json_encode($json);
+                return;
+            }
+
+            $this->message->info("Boleto marcado como pago!")->flash();
+            $json["redirect"] = url("/boletos-a-pagar");
+            echo json_encode($json);
+            return;
+        }
+
+        if (!empty($data["action"]) && $data["action"] == "markTicketAsPaidPopup") {
+
+            $data = filter_var_array($data, FILTER_SANITIZE_STRIPPED);
+
+            $data = (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday() ?? null;
 
             $ticket = (new TicketModel());
             $ticket->status = 'Boleto pago';
@@ -157,9 +178,9 @@ class Ticket extends Admin
             "head" => $head,
             "ticket" => (new TicketModel())->findById($data['ticketId']),
             "accountId" => $data['accountId'],
+            "firstTicketToPayGreatherThanToday" => (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday(),
         ]);
     }
-
     
     /**
      * @param array|null $data
@@ -183,7 +204,8 @@ class Ticket extends Admin
             "menu" => "tickets",
             "submenu" => "tickets",
             "head" => $head,
-            "accountId" => $data["accountId"]
+            "accountId" => $data["accountId"],
+            "firstTicketToPayGreatherThanToday" => (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday(),
         ]);
     }
 
@@ -193,6 +215,26 @@ class Ticket extends Admin
      */
     public function store(?array $data)
     {
+        $file = $_FILES['pdf'];
+
+        $filename = explode('.', $file['name']);
+        
+        $newFilename = md5(date('Ymdhis'));
+        $extension = $filename[1];
+
+        $dirSeparator = DIRECTORY_SEPARATOR;
+        $path = "{$dirSeparator}..{$dirSeparator}..{$dirSeparator}shared{$dirSeparator}pdfs{$dirSeparator}";
+
+        $moveFileTo = __DIR__ . $path . $newFilename . '.' . $extension;
+
+        if ($extension !== 'pdf') {
+            $json["message"] = "Erro ao enviar o formulário: formato de arquivo não suportado. Insira PDF.";
+            echo json_encode($json);
+            return;
+        }
+
+        move_uploaded_file($file['tmp_name'], $moveFileTo);
+
         if (user()->level_id != 1) {
             return url('/ops/404');
         }
@@ -221,6 +263,7 @@ class Ticket extends Admin
             $ticket->status = $data['status'];
             $ticket->due_date = $data['due_date'] ?? null;
             $ticket->account_id = $data['accountId'] ?? null;
+            $ticket->filename = $newFilename . '.' . $extension;
 
             if (!$ticket->save()) {
                 $json["message"] = $ticket->fail()->getMessage();
@@ -247,6 +290,7 @@ class Ticket extends Admin
             "submenu" => "tickets",
             "head" => $head,
             "accountId" => $data['accountId'],
+            "firstTicketToPayGreatherThanToday" => (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday(),
         ]);
     }
 
@@ -270,6 +314,7 @@ class Ticket extends Admin
             "head" => $head,
             'ticket' => $ticket,
             "accountId" => $data['accountId'],
+            "firstTicketToPayGreatherThanToday" => (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday(),
         ]);
     }
 
@@ -293,20 +338,34 @@ class Ticket extends Admin
             "head" => $head,
             'ticket' => $ticket,
             "accountId" => $data['accountId'],
+            "firstTicketToPayGreatherThanToday" => (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday(),
         ]);
     }
 
     public function update(array $data)
     {
-        if (!empty($data["action"]) && $data["action"] == "markTicketAsPaid") {
-            if (!empty($data['csrf'])) {
-                if ($_REQUEST && !csrf_verify($_REQUEST)) {
-                    $json["message"] = "Erro ao enviar o formulário, atualize a página";
-                    echo json_encode($json);
-                    return;
-                }
+        $file = $_FILES['pdf'] ?? [];
+        if ($file) {
+            $filename = explode('.', $file['name']);
+        
+            $newFilename = md5(date('Ymdhis'));
+            $extension = $filename[1];
+
+            $dirSeparator = DIRECTORY_SEPARATOR;
+            $path = "{$dirSeparator}..{$dirSeparator}..{$dirSeparator}shared{$dirSeparator}pdfs{$dirSeparator}";
+
+            $moveFileTo = __DIR__ . $path . $newFilename . '.' . $extension;
+
+            if ($extension !== 'pdf') {
+                $json["message"] = "Erro ao enviar o formulário: formato de arquivo não suportado. Insira PDF.";
+                echo json_encode($json);
+                return;
             }
 
+            move_uploaded_file($file['tmp_name'], $moveFileTo);
+        }
+
+        if (!empty($data["action"]) && $data["action"] == "markTicketAsPaid" || $data["action"] == "markTicketAsPaidPopup") {
             return $this->markTicketAsPaid($data);
         }
 
@@ -333,6 +392,9 @@ class Ticket extends Admin
             $ticket->due_date = $data['due_date'] ?? null;
             $ticket->status = $data['status'];
             $ticket->id = $data['ticketId'] ?? null;
+            if ($file) {
+                $ticket->filename = $newFilename . '.' . $extension;
+            }
             $ticket->account_id = $data['account_id'] ?? null;
 
             if (!$ticket->save()) {
@@ -361,19 +423,34 @@ class Ticket extends Admin
             "head" => $head,
             "ticket" => (new TicketModel())->findById($data['ticketId']),
             "accountId" => $data['accountId'],
+            "firstTicketToPayGreatherThanToday" => (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday(),
         ]);
     }
 
     public function updateRedirectToIndex(array $data)
     {
-        if (!empty($data["action"]) && $data["action"] == "markTicketAsPaid") {
-            if (!empty($data['csrf'])) {
-                if ($_REQUEST && !csrf_verify($_REQUEST)) {
-                    $json["message"] = "Erro ao enviar o formulário, atualize a página";
-                    echo json_encode($json);
-                    return;
-                }
+        $file = $_FILES['pdf'] ?? [];
+        if ($file) {
+            $filename = explode('.', $file['name']);
+        
+            $newFilename = md5(date('Ymdhis'));
+            $extension = $filename[1];
+
+            $dirSeparator = DIRECTORY_SEPARATOR;
+            $path = "{$dirSeparator}..{$dirSeparator}..{$dirSeparator}shared{$dirSeparator}pdfs{$dirSeparator}";
+
+            $moveFileTo = __DIR__ . $path . $newFilename . '.' . $extension;
+
+            if ($extension !== 'pdf') {
+                $json["message"] = "Erro ao enviar o formulário: formato de arquivo não suportado. Insira PDF.";
+                echo json_encode($json);
+                return;
             }
+
+            move_uploaded_file($file['tmp_name'], $moveFileTo);
+        }
+
+        if (!empty($data["action"]) && $data["action"] == "markTicketAsPaid") {
 
             return $this->markTicketAsPaid($data);
         }
@@ -401,6 +478,9 @@ class Ticket extends Admin
             $ticket->due_date = $data['due_date'] ?? null;
             $ticket->status = $data['status'];
             $ticket->id = $data['ticketId'] ?? null;
+            if ($file) {
+                $ticket->filename = $newFilename . '.' . $extension;
+            }
             $ticket->account_id = $data['account_id'] ?? null;
 
             if (!$ticket->save()) {
@@ -429,6 +509,7 @@ class Ticket extends Admin
             "head" => $head,
             "ticket" => (new TicketModel())->findById($data['ticketId']),
             "accountId" => $data['accountId'],
+            "firstTicketToPayGreatherThanToday" => (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday(),
         ]);
     }
 

@@ -42,7 +42,7 @@
                     <tbody>
                     <?php foreach ($banks as $bank): ?>
                         <tr>
-                            <td><a href="<?= url("/banco-e-coeficiente/alterar/{$bank->cod}"); ?>" class="" title="Consultar"><?=$bank->bank?></a></td>
+                            <td><a href="<?= url("/banco-e-coeficiente/alterar/{$bank->cod}"); ?>" title="Consultar"><?=$bank->bank?></a></td>
                             <td><?php if($bank->status=="1"):?>Ativo<?php else:?>Inativo<?php endif?></td>
                             <td>
                                 <a href="#" class="text-danger" title="Excluir" data-post="<?= url("/banco-e-coeficiente/excluir/{$bank->id}"); ?>" data-action="delete" data-confirm="ATENÇÃO: Tem certeza que deseja excluir esse banco e todos os dados relacionados a ele? Essa ação não pode ser desfeita!" data-client_cod="<?= $filter->cod; ?>"><i class="fas fa-trash"></i>

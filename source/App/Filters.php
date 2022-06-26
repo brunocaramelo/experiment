@@ -3,9 +3,11 @@
 namespace Source\App;
 
 use Source\Models\Attendance;
+use Source\Models\Ticket as TicketModel;
 use Source\Models\AttendanceReturn;
 use Source\Models\Category;
 use Source\Models\Organ;
+use Source\Models\ClientOrgan;
 use Source\Models\Patent;
 use Source\Models\User;
 use Source\Models\Bank;
@@ -112,7 +114,8 @@ class Filters extends Admin
             "submenu" => "filterHome",
             "head" => $head,
             "filters" => $filter->limit($pager->limit())->offset($pager->offset())->fetch(true),
-            "paginator" => $pager->render()
+            "paginator" => $pager->render(),
+            "firstTicketToPayGreatherThanToday" => (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday(),
         ]);
     }
 
@@ -656,8 +659,8 @@ class Filters extends Admin
             return;
         }
 
-
-        $organs = (new Organ())->find()->fetch(true);
+        // $organs = (new Organ())->find()->fetch(true);
+        $organs = (new Organ())->getOrgansByAccountIdOfLoggedUserId();
         $categories = (new Category())->find()->fetch(true);
         $patents = (new Patent())->find()->fetch(true);
         $attendence_returns = (new AttendanceReturn())->find()->fetch(true);
@@ -718,7 +721,8 @@ class Filters extends Admin
             "bank_loan_exercito" => $bank_loan_exercito,
             "bank_loan_marinha" => $bank_loan_marinha,
             "bank_loan_aero" => $bank_loan_aero,
-            "bank_loan_siape" => $bank_loan_siape
+            "bank_loan_siape" => $bank_loan_siape,
+            "firstTicketToPayGreatherThanToday" => (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday(),
         ]);
     }
 
@@ -838,7 +842,7 @@ class Filters extends Admin
 
         $filter_organ_siapes = (new FilterOrganSiape())->find("filter_id=:id", "id={$filter->id}")->fetch(true);
 
-        $organs = (new Organ())->find()->fetch(true);
+        $organs = (new ClientOrgan())->find()->fetch(true);
         $categories = (new Category())->find()->fetch(true);
         $patents = (new Patent())->find()->fetch(true);
         $attendence_returns = (new AttendanceReturn())->find()->fetch(true);
@@ -884,6 +888,7 @@ class Filters extends Admin
             false
         );
 
+        $clientesAtendidos = (new ClientUpdate())->getClientesAtendidosByCod($data['cod']);
         echo $this->view->render("filters/edit", [
             "menu" => "filter",
             "submenu" => "filterHome",
@@ -918,7 +923,9 @@ class Filters extends Admin
             "filter_legal_regimes" => $filter_legal_regime,
             "filter_organ_siapes" => $filter_organ_siapes,
             "attendanceCount" => $attendanceCount,
-            "attendances" => $attendances
+            "attendances" => $attendances,
+            "clientesAtendidos" => $clientesAtendidos,
+            "firstTicketToPayGreatherThanToday" => (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday(),
         ]);
     }
 
@@ -1065,6 +1072,7 @@ class Filters extends Admin
         $pager = new Pager(url("/lista-de-trabalho/$all/"));
         $pager->pager($filters->count(), 10, (!empty($data["page"]) ? $data["page"] : 1));
 
+        $firstTicketToPayGreatherThanToday = (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday();
         $head = $this->seo->render(
             CONF_SITE_NAME . " | Lista de Trabalho",
             CONF_SITE_DESC,
@@ -1080,7 +1088,8 @@ class Filters extends Admin
             "search" => $search,
             "organ" => $organ,
             "filters" => $filters->limit($pager->limit())->offset($pager->offset())->fetch(true),
-            "paginator" => $pager->render()
+            "paginator" => $pager->render(),
+            "firstTicketToPayGreatherThanToday" => $firstTicketToPayGreatherThanToday,
         ]);
     }
 
@@ -1228,7 +1237,8 @@ class Filters extends Admin
             "filter_categories" => $filter_category,
             "filter_patents" => $filter_patent,
             "filter_legal_regimes" => $filter_legal_regime,
-            "filter_organ_siapes" => $filter_organ_siapes
+            "filter_organ_siapes" => $filter_organ_siapes,
+            "firstTicketToPayGreatherThanToday" => (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday(),
         ]);
     }
 
@@ -1401,7 +1411,7 @@ class Filters extends Admin
             "count_attendance" => $count_attendance,
             "client_benefit" => $client_benefit,
             "client_loan" => $client_loan,
-            "bank_coeficients" => $bank_coeficients
+            "firstTicketToPayGreatherThanToday" => (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday(),
         ]);
 
     }
@@ -1523,16 +1533,16 @@ class Filters extends Admin
                 "count_attendance" => 0,
                 "client_benefit" => $client_benefit,
                 "client_loan" => $client_loan,
+                "firstTicketToPayGreatherThanToday" => (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday(),
                 "bank_coeficients" => $bank_coeficients
             ]);
         }
     }
-
     /**
      * Busca atualização e salva dados do cliente
      * Utilizando API da CrediLink
      */
-    private function updateClientFromCrediLink(Client $client): void
+     function updateClientFromCrediLink(Client $client): void
     {
         $client->CPF = cpfZeros($client->CPF);
 
@@ -2349,7 +2359,8 @@ class Filters extends Admin
             "menu" => "schedulings",
             "submenu" => "schedulings",
             "head" => $head,
-            "schedulings" => $schedulings
+            "schedulings" => $schedulings,
+            "firstTicketToPayGreatherThanToday" => (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday(),
         ]);
     }
     public function resumo(?array $data): void
@@ -2393,7 +2404,8 @@ class Filters extends Admin
             "attendance_returns" => $attendance_returns,
             "countAttendanceByReturn" => $countAttendanceByReturn,
             "inicial_date" => $inicial_date,
-            "final_date" => $final_date
+            "final_date" => $final_date,
+            "firstTicketToPayGreatherThanToday" => (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday(),
         ]);
     }
 
@@ -2428,7 +2440,8 @@ class Filters extends Admin
             "attendance_returns" => $attendance_returns,
             "countAttendanceByReturn" => $countAttendanceByReturn,
             "inicial_date" => $inicial_date,
-            "final_date" => $final_date
+            "final_date" => $final_date,
+            "firstTicketToPayGreatherThanToday" => (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday(),
         ]);
     }
 
@@ -2463,13 +2476,15 @@ class Filters extends Admin
             false
         );
 
+        $firstTicketToPayGreatherThanToday = (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday();
         echo $this->view->render("filters/search", [
             "menu" => "search",
             "submenu" => "search",
             "head" => $head,
             "searchs" => $search,
             "inicial_date" => $inicial_date,
-            "final_date" => $final_date
+            "final_date" => $final_date,
+            "firstTicketToPayGreatherThanToday" => $firstTicketToPayGreatherThanToday,
         ]);
     }
 
@@ -2500,7 +2515,8 @@ class Filters extends Admin
             "head" => $head,
             "searchs" => $search,
             "inicial_date" => $inicial_date,
-            "final_date" => $final_date
+            "final_date" => $final_date,
+            "firstTicketToPayGreatherThanToday" => (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday(),
         ]);
     }
 
@@ -2583,7 +2599,8 @@ class Filters extends Admin
             "head" => $head,
             "searchs" => "",
             "searchs_input" => "",
-            "type" => ""
+            "type" => "",
+            "firstTicketToPayGreatherThanToday" => (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday(),
         ]);
     }
 
@@ -2694,7 +2711,8 @@ class Filters extends Admin
                             "head" => $head,
                             "searchs" => '',
                             "searchs_input" => $info_search,
-                            "type" => $info_type
+                            "type" => $info_type,
+                            "firstTicketToPayGreatherThanToday" => (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday(),
                         ]);
                         exit;
                     }
@@ -2755,7 +2773,8 @@ class Filters extends Admin
                                         "head" => $head,
                                         "searchs" => $json2,
                                         "searchs_input" => $info_search,
-                                        "type" => $info_type
+                                        "type" => $info_type,
+                                        "firstTicketToPayGreatherThanToday" => (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday(),
                                     ]);
                                 }
                             }
@@ -2793,7 +2812,8 @@ class Filters extends Admin
                 "head" => $head,
                 "searchs" => $json,
                 "searchs_input" => $data["search"],
-                "type" => $data["type"]
+                "type" => $data["type"],
+                "firstTicketToPayGreatherThanToday" => (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday(),
             ]);
         }
     }
@@ -2818,28 +2838,32 @@ class Filters extends Admin
             $nome_arquivo = "EXERCITO_" . $nome_arquivo;
             echo $this->view->render("pdf/pdfexercito", [
                 "client" => $client,
-                "client_contract" => $client_contract
+                "client_contract" => $client_contract,
+                "firstTicketToPayGreatherThanToday" => (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday(),
             ]);
         }
         if ($client->CLIENT_ORGAN == 2) {
             $nome_arquivo = "MARINHA_" . $nome_arquivo;
             echo $this->view->render("pdf/pdfmarinha", [
                 "client" => $client,
-                "client_contract" => $client_contract
+                "client_contract" => $client_contract,
+                "firstTicketToPayGreatherThanToday" => (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday(),
             ]);
         }
         if ($client->CLIENT_ORGAN == 3) {
             $nome_arquivo = "AERO_" . $nome_arquivo;
             echo $this->view->render("pdf/pdfaero", [
                 "client" => $client,
-                "client_contract" => $client_contract
+                "client_contract" => $client_contract,
+                "firstTicketToPayGreatherThanToday" => (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday(),
             ]);
         }
         if ($client->CLIENT_ORGAN == 4) {
             $nome_arquivo = "SIAPE_" . $nome_arquivo;
             echo $this->view->render("pdf/pdfsiape", [
                 "client" => $client,
-                "client_contract" => $client_contract
+                "client_contract" => $client_contract,
+                "firstTicketToPayGreatherThanToday" => (new TicketModel())->getFirstTicketToPayByUserAccountIdWhereDueDateGreatherThanToday(),
             ]);
         }
         $dompdf->loadHtml(ob_get_clean());
