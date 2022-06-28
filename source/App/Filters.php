@@ -889,6 +889,7 @@ class Filters extends Admin
         );
 
         $clientesAtendidos = (new ClientUpdate())->getClientesAtendidosByCod($data['cod']);
+
         echo $this->view->render("filters/edit", [
             "menu" => "filter",
             "submenu" => "filterHome",

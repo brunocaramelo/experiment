@@ -19,19 +19,21 @@ class ClientUpdate extends DataLayer {
     public function getClientesAtendidosByCod($cod)
     {
         return Connect::getInstance()->query(
-            "SELECT a.*, 
-                c.ID,
-                c.CPF,
-                c.MATRICULA,
-                cu.*
-                    FROM sistem80_cred_base.client as c
-                    INNER JOIN attendances as a
-                        ON c.ID = a.client_id
-                    INNER JOIN filters as f
-                        ON a.filter_id = f.id
-                    INNER JOIN client_update as cu
-                        ON cu.client_id = c.ID
-                    WHERE f.cod = '{$cod}'"
+            "SELECT	c.ID, 
+            c.CPF, 
+            c.MATRICULA,
+            fq.cod,
+            cu.id as cu_id,
+            cu.*
+            FROM filter_queue as fq
+                INNER JOIN sistem80_cred_base.client as c
+                    ON fq.client_id = c.id
+                INNER JOIN accounts as a
+                    ON fq.account_id = a.id
+                INNER JOIN client_update as cu
+                    ON cu.client_id = c.id
+                    
+            WHERE fq.cod = '{$cod}'"
         )
         ->fetchAll();
     }
