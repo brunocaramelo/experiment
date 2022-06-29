@@ -16,7 +16,7 @@ class ClientUpdate extends DataLayer {
         parent::__construct("client_update", ["client_id","account_id"]);
     }
 
-    public function getClientesAtendidosByCod($cod)
+    public function getClientesToCsvByFilterId($filterId)
     {
         return Connect::getInstance()->query(
             "SELECT	c.ID, 
@@ -33,7 +33,7 @@ class ClientUpdate extends DataLayer {
                 INNER JOIN client_update as cu
                     ON cu.client_id = c.id
                     
-            WHERE fq.cod = '{$cod}'"
+            WHERE fq.filter_id = '{$filterId}'"
         )
         ->fetchAll();
     }

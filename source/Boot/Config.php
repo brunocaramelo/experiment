@@ -20,10 +20,10 @@
 define("DATA_LAYER_CONFIG", [
     "driver" => "mysql",
     "host" => "localhost",
-    "port" => "3309",
+    "port" => "3306",
     "dbname" => "sistem80_cred_hml",
     "username" => "root",
-    "passwd" => "testes",
+    "passwd" => "",
     "options" => [
         PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -36,8 +36,8 @@ define("DATA_LAYER_CONFIG", [
 /**
  * PROJECT URLs
  */
-define("CONF_URL_BASE", "http://sitelocal.local");
-define("CONF_URL", "http://sitelocal.local");
+define("CONF_URL_BASE", "http://dev.sistemacred.com/");
+define("CONF_URL", "http://dev.sistemacred.com/");
 
 /**
  * SITE

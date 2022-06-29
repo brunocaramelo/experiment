@@ -888,7 +888,7 @@ class Filters extends Admin
             false
         );
 
-        $clientesAtendidos = (new ClientUpdate())->getClientesAtendidosByCod($data['cod']);
+        $clientesAtendidos = (new ClientUpdate())->getClientesToCsvByFilterId($filter->id);
 
         echo $this->view->render("filters/edit", [
             "menu" => "filter",
